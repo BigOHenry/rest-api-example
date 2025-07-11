@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: resources/docker/Dockerfile
+    container_name: rest_api
+    env_file:
+      - .env.local
+    ports:
+      - 8080:80
+    volumes:
+      - .:/var/www/app
+
+  database:
+    image: library/postgres:17.5-alpine
+    container_name: rest_postgresql
+    env_file:
+      - .env.local
+    ports:
+      - 5432:5432
+    environment:
+        PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - database_data:/var/lib/postgresql/pgdata:rw
+    healthcheck:
+        test: [ "CMD", "pg_isready", "-d", "${DATABASE_NAME:-db_rest}", "-U", "${DATABASE_USER:-app}" ]
+        timeout: 5s
+        retries: 5
+        start_period: 60s
+
+volumes:
+  database_data:

@@ -6,14 +6,19 @@ api_platform:
 #        cache_headers:
 #            vary: ['Content-Type', 'Authorization', 'Origin']
 
-    title: 'DDD/CQRS REST API EXAMPLE'
+    title: 'Blog REST API EXAMPLE'
     version: '1.0.0'
-    description: 'Example of REST API with Domain-Driven Design and CQRS'
-
+    description: 'Example of REST API for blog with Domain-Driven Design and CQRS'
+#    use_symfony_listeners: true
     formats:
         json: ['application/json']
-    #    jsonld: ['application/ld+json']
-    #    html: ['text/html']
+        jsonld: ['application/ld+json']
+        html: ['text/html']
+#    defaults:
+#        stateless: true
+#        cache_headers:
+#            vary: ['Content-Type', 'Authorization', 'Origin']
+
 
     #graphql:
     #    enabled: true
@@ -22,10 +27,6 @@ api_platform:
 
     swagger:
         versions: [3]
-        api_keys:
-            apiKey:
-                name: Authorization
-                type: header
 
     doctrine:
         enabled: true

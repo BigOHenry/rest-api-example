@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Domain\Article\Entity;
 
@@ -49,11 +51,6 @@ class Article
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    protected function setId(?int $id): void
-    {
-        $this->id = $id;
     }
 
     public function getTitle(): string
@@ -107,6 +104,11 @@ class Article
     public function setUpdatedAt(\DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    protected function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 
     private function updated(): void

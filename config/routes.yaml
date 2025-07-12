@@ -1,5 +1,15 @@
-controllers:
-    resource:
-        path: ../src/Infrastructure/Controller/
-        namespace: App\Infrastructure\Controller
+#controllers:
+#    resource:
+#        path: ../src/Infrastructure/Controller/Api/
+#        namespace: App\Infrastructure\Controller\Api
+#    type: attribute
+
+auth_routes:
+    resource: '../src/Infrastructure/Controller/Api/Auth/'
     type: attribute
+    prefix: /api
+
+api_platform:
+    resource: .
+    type: api_platform
+    prefix: /api

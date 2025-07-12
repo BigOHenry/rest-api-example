@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Exception;
 
-use App\Domain\Article\Exception\ArticleException;
-
-class UserNotFoundException extends ArticleException
+class UserNotFoundException extends UserException
 {
+    public static function withId(int $id): self
+    {
+        return new self("User with id '{$id}' not found");
+    }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Domain\User\Entity;
 
@@ -6,7 +8,6 @@ use App\Domain\User\ValueObject\UserRole;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
 
 #[ORM\Entity]
 #[ORM\Table(name: 'user')]
@@ -45,11 +46,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $user;
     }
 
-    protected function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-
     public function setEmail(string $email): void
     {
         $this->email = $email;
@@ -69,7 +65,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->role = $role;
     }
-
 
     public function getId(): ?int
     {
@@ -98,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_' . strtoupper($this->role->value)];
+        return ['ROLE_' . mb_strtoupper($this->role->value)];
     }
 
     public function eraseCredentials(): void
@@ -108,6 +103,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
+        \assert($this->email !== '', 'Email should never be empty');
         return $this->email;
+    }
+
+    protected function setId(?int $id): void
+    {
+        $this->id = $id;
     }
 }

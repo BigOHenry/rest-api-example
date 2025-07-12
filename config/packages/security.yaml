@@ -1,10 +1,16 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+#        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+        App\Domain\User\Entity\User:
+            algorithm: auto
     providers:
         users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Domain\User\Entity\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -18,12 +24,38 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+        login:
+            pattern: ^/auth/login
+            stateless: true
+            provider: app_user_provider
+            json_login:
+                check_path: /auth/login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        register:
+            pattern: ^/auth/register
+            stateless: true
+            security: false
+
+        api:
+            pattern: ^/
+            stateless: true
+            provider: app_user_provider
+            jwt: ~
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/auth/login, roles: PUBLIC_ACCESS }
+        - { path: ^/auth/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
+        - { path: ^/users, roles: ROLE_ADMIN }
+        - { path: ^/, roles: ROLE_USER }
+    role_hierarchy:
+        ROLE_ADMIN: [ ROLE_AUTHOR, ROLE_USER ]
+        ROLE_AUTHOR: [ ROLE_READER, ROLE_USER ]
+        ROLE_READER: [ ROLE_USER ]
 
 when@test:
     security:

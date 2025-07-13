@@ -24,6 +24,8 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\Infrastructure\ApiPlatform\OpenApiFactoryDecorator:
+
     # Command Bus
     App\Infrastructure\CommandBus\SymfonyCommandBus:
         arguments: ['@command.bus']
@@ -52,6 +54,9 @@ services:
     App\Infrastructure\CommandBus\Middleware\ValidationMiddleware:
         arguments: ['@validator']
 
+    App\Infrastructure\ApiPlatform\Resource\:
+        resource: '../src/Infrastructure/ApiPlatform/Resource/'
+        tags: ['api_platform.resource']
 
     App\Domain\User\Repository\UserRepositoryInterface:
         alias: App\Infrastructure\Repository\Doctrine\DoctrineUserRepository

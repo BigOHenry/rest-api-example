@@ -7,11 +7,10 @@ use App\Application\Bus\Command\CommandBusInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
-//#[Route('/auth/register', name: 'auth_register', methods: ['POST'])]
-#[AsController]
+
+#[Route('/auth/register', name: 'auth_register', methods: ['POST'])]
 class RegisterController extends AbstractController
 {
     public function __construct(

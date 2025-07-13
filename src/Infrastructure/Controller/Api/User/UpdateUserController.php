@@ -26,10 +26,10 @@ class UpdateUserController extends AbstractController
             $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
             $command = new UpdateUserCommand(
-                userId: $id,
-                email: $data['email'] ?? null,
-                name: $data['name'] ?? null,
-                role: isset($data['role']) ? UserRole::from($data['role']) : null
+                id: $id,
+                email: $data['email'],
+                name: $data['name'],
+                role: UserRole::from($data['role'])
             );
 
             $this->commandBus->handle($command);
@@ -38,9 +38,9 @@ class UpdateUserController extends AbstractController
                 'message' => 'User updated successfully',
                 'user' => [
                     'id' => $id,
-                    'email' => $data['email'] ?? null,
-                    'name' => $data['name'] ?? null,
-                    'role' => $data['role'] ?? null,
+                    'email' => $data['email'],
+                    'name' => $data['name'],
+                    'role' => $data['role'],
                 ],
             ], 200);
         } catch (\JsonException $e) {

@@ -6,6 +6,7 @@ namespace App\Infrastructure\Controller\Api\Auth;
 
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\User\CreateUser\CreateUserCommand;
+use App\Domain\User\ValueObject\UserRole;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,7 @@ class RegisterController extends AbstractController
                 $data['email'],
                 $data['password'],
                 $data['name'],
-                $data['role'] ?? 'reader'
+                UserRole::from($data['role'] ?? UserRole::READER)
             );
 
             $this->commandBus->handle($command);
@@ -45,7 +46,7 @@ class RegisterController extends AbstractController
                 'user' => [
                     'email' => $data['email'],
                     'name' => $data['name'],
-                    'role' => $data['role'] ?? 'reader',
+                    'role' => $data['role'] ?? UserRole::READER,
                 ],
             ], 201);
         } catch (\Exception $e) {

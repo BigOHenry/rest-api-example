@@ -25,13 +25,13 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Infrastructure\ApiPlatform\OpenApiFactoryDecorator:
-
-    # Command Bus
-    App\Infrastructure\CommandBus\SymfonyCommandBus:
-        arguments: ['@command.bus']
-
-    App\Application\Bus\Command\CommandBusInterface:
-        alias: App\Infrastructure\CommandBus\SymfonyCommandBus
+#
+#    # Command Bus
+#    App\Infrastructure\CommandBus\SymfonyCommandBus:
+#        arguments: ['@command.bus']
+#
+#    App\Application\Bus\Command\CommandBusInterface:
+#        alias: App\Infrastructure\CommandBus\SymfonyCommandBus
 
     # Query Bus
     App\Infrastructure\QueryBus\SymfonyQueryBus:
@@ -40,16 +40,17 @@ services:
     App\Application\Bus\Query\QueryBusInterface:
         alias: App\Infrastructure\QueryBus\SymfonyQueryBus
 
-    # Auto-registration of all handlers
-    App\Application\Command\:
-        resource: '../src/Application/Command/*Handler.php'
-        tags:
-            - { name: messenger.message_handler, bus: command.bus }
+    # Command Bus
+    App\Infrastructure\CommandBus\SymfonyCommandBus:
+        arguments:
+            - !tagged_iterator command.handler
 
-    App\Application\Query\:
-        resource: '../src/Application/Query/*Handler.php'
-        tags:
-            - { name: messenger.message_handler, bus: query.bus }
+    App\Application\Bus\Command\CommandBusInterface:
+        alias: App\Infrastructure\CommandBus\SymfonyCommandBus
+
+    _instanceof:
+        App\Application\Bus\Command\CommandHandlerInterface:
+            tags: ['command.handler']
 
     App\Infrastructure\CommandBus\Middleware\ValidationMiddleware:
         arguments: ['@validator']
@@ -60,3 +61,6 @@ services:
 
     App\Domain\User\Repository\UserRepositoryInterface:
         alias: App\Infrastructure\Repository\Doctrine\DoctrineUserRepository
+
+    App\Domain\Article\Repository\ArticleRepositoryInterface:
+        alias: App\Infrastructure\Repository\Doctrine\DoctrineArticleRepository

@@ -13,12 +13,13 @@ use App\Domain\User\Repository\UserRepositoryInterface;
 readonly class CreateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
-        private UserRepositoryInterface $userRepository
-    ) {}
+        private UserRepositoryInterface $userRepository,
+    ) {
+    }
 
     public function handle(CommandInterface $command): void
     {
-        assert($command instanceof CreateUserCommand);
+        \assert($command instanceof CreateUserCommand);
 
         $existingUser = $this->userRepository->findByEmail($command->email);
         if ($existingUser) {

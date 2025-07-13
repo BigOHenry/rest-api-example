@@ -38,7 +38,7 @@ RUN docker-php-ext-install \
     pcntl
 
 # Install APCu
-RUN pecl install apcu && docker-php-ext-enable apcu
+#RUN pecl install apcu && docker-php-ext-enable apcu
 
 # PHP Configuration
 RUN echo "expose_php = Off" >> "${PHP_INI_DIR}/php.ini" && \
@@ -61,9 +61,9 @@ RUN echo "opcache.enable=1" >> "${PHP_INI_DIR}/php.ini" && \
     echo "opcache.fast_shutdown=1" >> "${PHP_INI_DIR}/php.ini"
 
 # APCu Configuration
-RUN echo "apc.enabled=1" >> "${PHP_INI_DIR}/php.ini" && \
-    echo "apc.shm_size=64M" >> "${PHP_INI_DIR}/php.ini" && \
-    echo "apc.ttl=3600" >> "${PHP_INI_DIR}/php.ini"
+#RUN echo "apc.enabled=1" >> "${PHP_INI_DIR}/php.ini" && \
+#    echo "apc.shm_size=64M" >> "${PHP_INI_DIR}/php.ini" && \
+#    echo "apc.ttl=3600" >> "${PHP_INI_DIR}/php.ini"
 
 # Install Composer
 RUN php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer

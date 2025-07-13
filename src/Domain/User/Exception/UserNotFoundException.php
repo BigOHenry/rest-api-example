@@ -10,4 +10,9 @@ class UserNotFoundException extends UserException
     {
         return new self("User with id '{$id}' not found");
     }
+
+    public static function withEmail(string $email): self
+    {
+        return new self("User with email '{$email}' not found");
+    }
 }

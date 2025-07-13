@@ -9,14 +9,13 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Domain\User\Entity\User;
-use App\Infrastructure\Controller\Api\Auth\LoginController;
-use App\Infrastructure\Controller\Api\Auth\RegisterController;
 use App\Infrastructure\Controller\Api\User\CreateUserController;
 use App\Infrastructure\Controller\Api\User\UpdateUserController;
 use App\Infrastructure\Controller\Api\User\DeleteUserController;
 
 #[ApiResource(
     uriTemplate: '/users',
+    shortName: 'User',
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['user:read']],
@@ -43,16 +42,6 @@ use App\Infrastructure\Controller\Api\User\DeleteUserController;
             controller: DeleteUserController::class,
             security: "is_granted('ROLE_ADMIN')"
         ),
-//        new Post(
-//            uriTemplate: '/auth/login',
-//            controller: LoginController::class,
-//            name: 'auth_login'
-//        ),
-//        new Post(
-//            uriTemplate: '/auth/register',
-//            controller: RegisterController::class,
-//            name: 'auth_register'
-//        )
     ],
     class: User::class,
     normalizationContext: ['groups' => ['user:read']],

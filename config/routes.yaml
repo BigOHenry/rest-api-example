@@ -4,10 +4,10 @@
 #        namespace: App\Infrastructure\Controller\Api
 #    type: attribute
 
-auth_routes:
-    resource: '../src/Infrastructure/Controller/Api/Auth/'
-    type: attribute
-    prefix: /api
+#auth_routes:
+#    resource: '../src/Infrastructure/Controller/Api/Auth/'
+#    type: attribute
+#    prefix: /api
 
 api_platform:
     resource: .

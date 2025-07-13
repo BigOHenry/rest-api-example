@@ -14,15 +14,13 @@ final readonly class CreateUserCommand implements CommandInterface
         #[Assert\NotBlank]
         #[Assert\Email]
         public string $email,
-
         #[Assert\NotBlank]
         #[Assert\Length(min: 8)]
         public string $password,
-
         #[Assert\NotBlank]
         public string $name,
-
         #[Assert\Choice([UserRole::ADMIN, UserRole::AUTHOR, UserRole::READER])]
-        public UserRole $role
-    ) {}
+        public UserRole $role,
+    ) {
+    }
 }

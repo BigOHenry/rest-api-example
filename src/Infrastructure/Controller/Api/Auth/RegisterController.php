@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Infrastructure\Controller\Api\Auth;
 
-use App\Application\Command\User\CreateUser\CreateUserCommand;
 use App\Application\Bus\Command\CommandBusInterface;
+use App\Application\Command\User\CreateUser\CreateUserCommand;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-
 #[Route('/auth/register', name: 'auth_register', methods: ['POST'])]
 class RegisterController extends AbstractController
 {
     public function __construct(
-        private readonly CommandBusInterface $commandBus
-    ) {}
+        private readonly CommandBusInterface $commandBus,
+    ) {
+    }
 
     public function __invoke(Request $request): JsonResponse
     {
@@ -24,7 +26,7 @@ class RegisterController extends AbstractController
         if (!$this->validateRegistrationData($data)) {
             return new JsonResponse([
                 'error' => 'Invalid data',
-                'message' => 'Required fields: email, password, name, role'
+                'message' => 'Required fields: email, password, name, role',
             ], 400);
         }
 
@@ -43,18 +45,20 @@ class RegisterController extends AbstractController
                 'user' => [
                     'email' => $data['email'],
                     'name' => $data['name'],
-                    'role' => $data['role'] ?? 'reader'
-                ]
+                    'role' => $data['role'] ?? 'reader',
+                ],
             ], 201);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'error' => 'Registration failed',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         }
     }
 
+    /**
+     * @param string[]|null $data
+     */
     private function validateRegistrationData(?array $data): bool
     {
         if (!$data) {
@@ -68,10 +72,10 @@ class RegisterController extends AbstractController
             }
         }
 
-        if (isset($data['role']) && !in_array($data['role'], ['admin', 'author', 'reader'])) {
+        if (isset($data['role']) && !\in_array($data['role'], ['admin', 'author', 'reader'], true)) {
             return false;
         }
 
-        return filter_var($data['email'], FILTER_VALIDATE_EMAIL) && strlen($data['password']) >= 8;
+        return filter_var($data['email'], \FILTER_VALIDATE_EMAIL) && mb_strlen($data['password']) >= 8;
     }
 }

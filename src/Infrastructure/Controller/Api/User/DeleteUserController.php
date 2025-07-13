@@ -12,8 +12,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DeleteUserController extends AbstractController
 {
     public function __construct(
-        private readonly CommandBusInterface $commandBus
-    ) {}
+        private readonly CommandBusInterface $commandBus,
+    ) {
+    }
 
     public function __invoke(int $id): JsonResponse
     {
@@ -22,13 +23,12 @@ class DeleteUserController extends AbstractController
             $this->commandBus->handle($command);
 
             return new JsonResponse([
-                'message' => 'User deleted successfully'
+                'message' => 'User deleted successfully',
             ]);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'error' => 'User deletion failed',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         }
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Infrastructure\ApiPlatform\Resource;
 
@@ -14,50 +16,6 @@ use App\Infrastructure\Controller\Api\Auth\RegisterController;
     uriTemplate: '/auth',
     shortName: 'Auth',
     operations: [
-//        new Post(
-//            uriTemplate: '/auth/login',
-//            openapi: new Operation(
-//                responses: [
-//                    '200' => new Response(
-//                        description: 'Login successful',
-//                        content: new \ArrayObject([
-//                            'application/json' => new MediaType(
-//                                schema: new \ArrayObject([
-//                                    'type' => 'object',
-//                                    'properties' => [
-//                                        'token' => ['type' => 'string'],
-//                                        'user' => ['type' => 'object'],
-//                                    ],
-//                                ])
-//                            ),
-//                        ])
-//                    ),
-//                    '401' => new Response(description: 'Invalid credentials'),
-//                ],
-//                summary: 'User login',
-//                description: 'Authenticate user and return JWT token',
-//                requestBody: new RequestBody(
-//                    content: new \ArrayObject([
-//                        'application/json' => new MediaType(
-//                            schema: new \ArrayObject([
-//                                'type' => 'object',
-//                                'properties' => [
-//                                    'email' => [
-//                                        'type' => 'string',
-//                                        'example' => 'user@example.com',
-//                                    ],
-//                                    'password' => [
-//                                        'type' => 'string',
-//                                        'example' => 'password123',
-//                                    ],
-//                                ],
-//                            ])
-//                        ),
-//                    ])
-//                )
-//            ),
-//            name: 'auth_login'
-//        ),
         new Post(
             uriTemplate: '/auth/register',
             controller: RegisterController::class,
@@ -74,22 +32,22 @@ use App\Infrastructure\Controller\Api\Auth\RegisterController;
                             'application/json' => new MediaType(
                                 schema: new \ArrayObject(
                                     [
-                                        'type'       => 'object',
+                                        'type' => 'object',
                                         'properties' => [
-                                            'email'    => [
-                                                'type'    => 'string',
+                                            'email' => [
+                                                'type' => 'string',
                                                 'example' => 'user@example.com',
                                             ],
                                             'password' => [
-                                                'type'    => 'string',
+                                                'type' => 'string',
                                                 'example' => 'password123',
                                             ],
-                                            'name'     => [
-                                                'type'    => 'string',
+                                            'name' => [
+                                                'type' => 'string',
                                                 'example' => 'John Doe',
                                             ],
-                                            'role'     => [
-                                                'type'    => 'string',
+                                            'role' => [
+                                                'type' => 'string',
                                                 'example' => 'reader',
                                             ],
                                         ],
@@ -102,7 +60,8 @@ use App\Infrastructure\Controller\Api\Auth\RegisterController;
             ),
             name: 'auth_register'
         ),
-    ])]
+    ]
+)]
 class AuthResource
 {
 }

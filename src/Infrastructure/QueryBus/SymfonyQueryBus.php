@@ -12,17 +12,17 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
 final readonly class SymfonyQueryBus implements QueryBusInterface
 {
     public function __construct(
-        private MessageBusInterface $queryBus
-    ) {}
+        private MessageBusInterface $queryBus,
+    ) {
+    }
 
     /**
-     * @param object $query
-     * @return mixed
      * @throws ExceptionInterface
      */
     public function handle(object $query): mixed
     {
         $envelope = $this->queryBus->dispatch($query);
+
         return $envelope->last(HandledStamp::class)?->getResult();
     }
 }

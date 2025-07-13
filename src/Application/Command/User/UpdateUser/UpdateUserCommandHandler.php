@@ -4,34 +4,31 @@ declare(strict_types=1);
 
 namespace App\Application\Command\User\UpdateUser;
 
+use App\Application\Bus\Command\CommandHandlerInterface;
+use App\Application\Bus\Command\CommandInterface;
 use App\Domain\User\Exception\UserNotFoundException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 
-final readonly class UpdateUserCommandHandler
+
+final readonly class UpdateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
     ) {
     }
 
-    public function handle(UpdateUserCommand $command): void
+    public function handle(CommandInterface $command): void
     {
-        $user = $this->userRepository->findById($command->userId);
+        \assert($command instanceof UpdateUserCommand);
+
+        $user = $this->userRepository->findById($command->id);
         if (!$user) {
-            throw UserNotFoundException::withId($command->userId);
+            throw UserNotFoundException::withId($command->id);
         }
 
-        if ($command->email) {
-            $user->setEmail($command->email);
-        }
-
-        if ($command->name) {
-            $user->setName($command->name);
-        }
-
-        if ($command->role) {
-            $user->setRole($command->role);
-        }
+        $user->setEmail($command->email);
+        $user->setName($command->name);
+        $user->setRole($command->role);
 
         $this->userRepository->save($user);
     }

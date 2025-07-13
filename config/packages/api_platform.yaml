@@ -9,7 +9,8 @@ api_platform:
     title: 'Blog REST API EXAMPLE'
     version: '1.0.0'
     description: 'Example of REST API for blog with Domain-Driven Design and CQRS'
-#    use_symfony_listeners: true
+    resource_class_directories:
+        - '%kernel.project_dir%/src/Infrastructure/ApiPlatform/Resource'
     formats:
         json: ['application/json']
         jsonld: ['application/ld+json']

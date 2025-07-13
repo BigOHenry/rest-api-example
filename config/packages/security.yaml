@@ -25,21 +25,22 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
         login:
-            pattern: ^/auth/login
+            pattern: ^/api/auth/login
             stateless: true
             provider: app_user_provider
             json_login:
-                check_path: /auth/login
+                check_path: /api/auth/login
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                username_path: email
 
         register:
-            pattern: ^/auth/register
+            pattern: ^/api/auth/register
             stateless: true
             security: false
 
         api:
-            pattern: ^/
+            pattern: ^/api
             stateless: true
             provider: app_user_provider
             jwt: ~
@@ -47,10 +48,10 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/auth/login, roles: PUBLIC_ACCESS }
-        - { path: ^/auth/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/docs, roles: PUBLIC_ACCESS }
-        - { path: ^/users, roles: ROLE_ADMIN }
+        - { path: ^/api/users, roles: ROLE_ADMIN }
         - { path: ^/, roles: ROLE_USER }
     role_hierarchy:
         ROLE_ADMIN: [ ROLE_AUTHOR, ROLE_USER ]

@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class UpdateUserController extends AbstractController
 {
     public function __construct(
-        private readonly CommandBusInterface $commandBus
+        private readonly CommandBusInterface $commandBus,
     ) {
     }
 
@@ -23,7 +23,7 @@ class UpdateUserController extends AbstractController
     public function update(int $id, Request $request): JsonResponse
     {
         try {
-            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
             $command = new UpdateUserCommand(
                 userId: $id,
@@ -40,28 +40,24 @@ class UpdateUserController extends AbstractController
                     'id' => $id,
                     'email' => $data['email'] ?? null,
                     'name' => $data['name'] ?? null,
-                    'role' => $data['role'] ?? null
-                ]
+                    'role' => $data['role'] ?? null,
+                ],
             ], 200);
-
         } catch (\JsonException $e) {
             return new JsonResponse([
                 'error' => 'Invalid JSON format',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
-
         } catch (\ValueError $e) {
             return new JsonResponse([
                 'error' => 'Invalid role value',
-                'message' => 'Role must be one of: admin, author, reader'
+                'message' => 'Role must be one of: admin, author, reader',
             ], 400);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'error' => 'User update failed',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         }
     }
 }
-

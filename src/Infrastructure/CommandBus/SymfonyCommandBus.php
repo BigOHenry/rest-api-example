@@ -11,12 +11,11 @@ use Symfony\Component\Messenger\MessageBusInterface;
 final readonly class SymfonyCommandBus implements CommandBusInterface
 {
     public function __construct(
-        private MessageBusInterface $commandBus
-    ) {}
+        private MessageBusInterface $commandBus,
+    ) {
+    }
 
     /**
-     * @param object $command
-     * @return void
      * @throws ExceptionInterface
      */
     public function handle(object $command): void

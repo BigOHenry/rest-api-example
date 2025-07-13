@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Application\Command\User\UpdateUser;
 
-use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Exception\UserNotFoundException;
+use App\Domain\User\Repository\UserRepositoryInterface;
 
 final readonly class UpdateUserCommandHandler
 {
     public function __construct(
-        private UserRepositoryInterface $userRepository
-    ) {}
+        private UserRepositoryInterface $userRepository,
+    ) {
+    }
 
     public function handle(UpdateUserCommand $command): void
     {

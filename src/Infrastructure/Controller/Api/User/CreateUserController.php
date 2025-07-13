@@ -14,13 +14,14 @@ use Symfony\Component\HttpFoundation\Request;
 class CreateUserController extends AbstractController
 {
     public function __construct(
-        private readonly CommandBusInterface $commandBus
-    ) {}
+        private readonly CommandBusInterface $commandBus,
+    ) {
+    }
 
     public function __invoke(Request $request): JsonResponse
     {
         try {
-            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
             $command = new CreateUserCommand(
                 $data['email'] ?? '',
@@ -36,14 +37,13 @@ class CreateUserController extends AbstractController
                 'user' => [
                     'email' => $data['email'],
                     'name' => $data['name'],
-                    'role' => $data['role'] ?? 'reader'
-                ]
+                    'role' => $data['role'] ?? 'reader',
+                ],
             ], 201);
-
         } catch (\Exception $e) {
             return new JsonResponse([
                 'error' => 'User creation failed',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         }
     }

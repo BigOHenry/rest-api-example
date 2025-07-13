@@ -1,17 +1,19 @@
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Infrastructure\ApiPlatform\Resource;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
 use App\Domain\User\Entity\User;
 use App\Infrastructure\Controller\Api\User\CreateUserController;
-use App\Infrastructure\Controller\Api\User\UpdateUserController;
 use App\Infrastructure\Controller\Api\User\DeleteUserController;
+use App\Infrastructure\Controller\Api\User\UpdateUserController;
 
 #[ApiResource(
     uriTemplate: '/users',

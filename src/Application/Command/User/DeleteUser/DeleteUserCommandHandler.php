@@ -10,8 +10,9 @@ use App\Domain\User\Repository\UserRepositoryInterface;
 final readonly class DeleteUserCommandHandler
 {
     public function __construct(
-        private UserRepositoryInterface $userRepository
-    ) {}
+        private UserRepositoryInterface $userRepository,
+    ) {
+    }
 
     public function handle(DeleteUserCommand $command): void
     {

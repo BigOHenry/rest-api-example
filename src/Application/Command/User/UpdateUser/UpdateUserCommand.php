@@ -13,6 +13,7 @@ final readonly class UpdateUserCommand implements CommandInterface
         public int $userId,
         public string $email,
         public ?string $name,
-        public ?UserRole $role
-    ) {}
+        public ?UserRole $role,
+    ) {
+    }
 }

@@ -9,11 +9,13 @@ use App\Application\Bus\Command\CommandInterface;
 use App\Domain\User\Entity\User;
 use App\Domain\User\Exception\UserAlreadyExistsException;
 use App\Domain\User\Repository\UserRepositoryInterface;
+use App\Domain\User\Service\PasswordHashingServiceInterface;
 
 readonly class CreateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
+        private PasswordHashingServiceInterface $passwordHashingService
     ) {
     }
 
@@ -28,10 +30,13 @@ readonly class CreateUserCommandHandler implements CommandHandlerInterface
 
         $user = User::create(
             $command->email,
-            $command->password,
+            'tmp',
             $command->name,
             $command->role
         );
+        $hashedPassword = $this->passwordHashingService->hashPassword($user, $command->password);
+
+        $user->setPassword($hashedPassword);
 
         $this->userRepository->save($user);
     }

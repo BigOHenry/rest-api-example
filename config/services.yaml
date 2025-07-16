@@ -25,13 +25,6 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Infrastructure\ApiPlatform\OpenApiFactoryDecorator:
-#
-#    # Command Bus
-#    App\Infrastructure\CommandBus\SymfonyCommandBus:
-#        arguments: ['@command.bus']
-#
-#    App\Application\Bus\Command\CommandBusInterface:
-#        alias: App\Infrastructure\CommandBus\SymfonyCommandBus
 
     # Query Bus
     App\Infrastructure\QueryBus\SymfonyQueryBus:
@@ -58,6 +51,11 @@ services:
     App\Infrastructure\ApiPlatform\Resource\:
         resource: '../src/Infrastructure/ApiPlatform/Resource/'
         tags: ['api_platform.resource']
+
+    App\Domain\User\Service\PasswordHashingServiceInterface:
+        class: App\Infrastructure\Service\PasswordHashingService
+        arguments:
+            - '@security.user_password_hasher'
 
     App\Domain\User\Repository\UserRepositoryInterface:
         alias: App\Infrastructure\Repository\Doctrine\DoctrineUserRepository

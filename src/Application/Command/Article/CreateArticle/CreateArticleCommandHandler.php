@@ -12,7 +12,6 @@ use App\Domain\Article\Repository\ArticleRepositoryInterface;
 use App\Domain\User\Exception\UserNotFoundException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 
-
 readonly class CreateArticleCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
@@ -23,6 +22,7 @@ readonly class CreateArticleCommandHandler implements CommandHandlerInterface
 
     public function handle(CommandInterface $command): void
     {
+        \assert($command instanceof CreateArticleCommand);
 
         $existingArticle = $this->articleRepository->findByTitle($command->title);
         if ($existingArticle) {
@@ -30,7 +30,7 @@ readonly class CreateArticleCommandHandler implements CommandHandlerInterface
         }
 
         $user = $this->userRepository->findByEmail($command->authorEmail);
-        if ($user) {
+        if ($user === null) {
             throw UserNotFoundException::withEmail($command->authorEmail);
         }
 

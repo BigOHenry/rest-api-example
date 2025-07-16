@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Put;
 use App\Domain\User\Entity\User;
 use App\Infrastructure\Controller\Api\User\CreateUserController;
 use App\Infrastructure\Controller\Api\User\DeleteUserController;
+use App\Infrastructure\Controller\Api\User\GetUsersController;
 use App\Infrastructure\Controller\Api\User\UpdateUserController;
 
 #[ApiResource(
@@ -20,6 +21,7 @@ use App\Infrastructure\Controller\Api\User\UpdateUserController;
     shortName: 'User',
     operations: [
         new GetCollection(
+            controller: GetUsersController::class,
             normalizationContext: ['groups' => ['user:read']],
             security: "is_granted('ROLE_ADMIN')"
         ),

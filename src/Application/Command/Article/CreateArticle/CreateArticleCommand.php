@@ -17,7 +17,7 @@ class CreateArticleCommand implements CommandInterface
         public string $content,
         #[Assert\NotBlank]
         #[Assert\Email]
-        public string $authorEmail
+        public string $authorEmail,
     ) {
     }
 }

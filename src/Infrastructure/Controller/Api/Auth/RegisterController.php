@@ -10,7 +10,7 @@ use App\Domain\User\ValueObject\UserRole;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/auth/register', name: 'auth_register', methods: ['POST'])]
 class RegisterController extends AbstractController
@@ -36,7 +36,7 @@ class RegisterController extends AbstractController
                 $data['email'],
                 $data['password'],
                 $data['name'],
-                UserRole::from($data['role'] ?? UserRole::READER)
+                UserRole::from($data['role'])
             );
 
             $this->commandBus->handle($command);
@@ -46,7 +46,7 @@ class RegisterController extends AbstractController
                 'user' => [
                     'email' => $data['email'],
                     'name' => $data['name'],
-                    'role' => $data['role'] ?? UserRole::READER,
+                    'role' => $data['role'],
                 ],
             ], 201);
         } catch (\Exception $e) {

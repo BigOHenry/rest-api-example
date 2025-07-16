@@ -26,13 +26,6 @@ services:
 
     App\Infrastructure\ApiPlatform\OpenApiFactoryDecorator:
 
-    # Query Bus
-    App\Infrastructure\QueryBus\SymfonyQueryBus:
-        arguments: ['@query.bus']
-
-    App\Application\Bus\Query\QueryBusInterface:
-        alias: App\Infrastructure\QueryBus\SymfonyQueryBus
-
     # Command Bus
     App\Infrastructure\CommandBus\SymfonyCommandBus:
         arguments:
@@ -44,6 +37,16 @@ services:
     _instanceof:
         App\Application\Bus\Command\CommandHandlerInterface:
             tags: ['command.handler']
+        App\Application\Bus\Query\QueryHandlerInterface:
+            tags: ['query.handler']
+
+    # Query Bus
+    App\Infrastructure\QueryBus\SymfonyQueryBus:
+        arguments:
+            - !tagged_iterator query.handler
+
+    App\Application\Bus\Query\QueryBusInterface:
+        alias: App\Infrastructure\QueryBus\SymfonyQueryBus
 
     App\Infrastructure\CommandBus\Middleware\ValidationMiddleware:
         arguments: ['@validator']

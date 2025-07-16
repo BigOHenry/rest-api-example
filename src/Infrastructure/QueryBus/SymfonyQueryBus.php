@@ -5,24 +5,70 @@ declare(strict_types=1);
 namespace App\Infrastructure\QueryBus;
 
 use App\Application\Bus\Query\QueryBusInterface;
-use Symfony\Component\Messenger\Exception\ExceptionInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
+use App\Application\Bus\Query\QueryHandlerInterface;
+use App\Application\Bus\Query\QueryInterface;
+use App\Application\Bus\Query\QueryResultInterface;
+use Symfony\Component\Messenger\Exception\NoHandlerForMessageException;
 
 final readonly class SymfonyQueryBus implements QueryBusInterface
 {
-    public function __construct(
-        private MessageBusInterface $queryBus,
-    ) {
+    private QueryHandlerRegistry $registry;
+
+    /**
+     * @param QueryHandlerInterface[] $handlers
+     */
+    public function __construct(iterable $handlers)
+    {
+        $this->registry = new QueryHandlerRegistry();
+        $this->registerHandlers($handlers);
+    }
+
+    public function handle(QueryInterface $query): QueryResultInterface
+    {
+        return $this->dispatch($query);
+    }
+
+    private function dispatch(QueryInterface $query): QueryResultInterface
+    {
+        $handler = $this->registry->get($query::class);
+
+        if (!$handler) {
+            throw new NoHandlerForMessageException(\sprintf('No handler for message "%s".', $query::class));
+        }
+
+        return $handler->handle($query);
     }
 
     /**
-     * @throws ExceptionInterface
+     * @param QueryHandlerInterface[] $handlers
      */
-    public function handle(object $query): mixed
+    private function registerHandlers(iterable $handlers): void
     {
-        $envelope = $this->queryBus->dispatch($query);
+        foreach ($handlers as $handler) {
+            if (!$handler instanceof QueryHandlerInterface) {
+                continue;
+            }
 
-        return $envelope->last(HandledStamp::class)?->getResult();
+            $this->registerHandlerForSupportedQueries($handler);
+        }
+    }
+
+    private function registerHandlerForSupportedQueries(QueryHandlerInterface $handler): void
+    {
+        $handlerClass = $handler::class;
+        $queryClass = $this->getQueryClassFromHandlerClass($handlerClass);
+
+        if ($queryClass && class_exists($queryClass)) {
+            $this->registry->register($queryClass, $handler);
+        }
+    }
+
+    private function getQueryClassFromHandlerClass(string $handlerClass): ?string
+    {
+        if (str_ends_with($handlerClass, 'Handler')) {
+            return mb_substr($handlerClass, 0, -7);
+        }
+
+        return null;
     }
 }

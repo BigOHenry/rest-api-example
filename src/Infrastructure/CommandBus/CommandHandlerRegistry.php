@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Infrastructure\CommandBus;
 
@@ -6,6 +8,9 @@ use App\Application\Bus\Command\CommandHandlerInterface;
 
 class CommandHandlerRegistry
 {
+    /**
+     * @var CommandHandlerInterface[]
+     */
     private array $handlers = [];
 
     public function register(string $commandClass, CommandHandlerInterface $handler): void

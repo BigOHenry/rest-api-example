@@ -21,7 +21,7 @@ readonly class DeleteArticleCommandHandler implements CommandHandlerInterface
         \assert($command instanceof DeleteArticleCommand);
 
         $article = $this->articleRepository->findById($command->id);
-        if ($article) {
+        if ($article === null) {
             throw ArticleNotFoundException::withId($command->id);
         }
 

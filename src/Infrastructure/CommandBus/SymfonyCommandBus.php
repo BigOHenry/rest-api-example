@@ -13,24 +13,13 @@ class SymfonyCommandBus implements CommandBusInterface
 {
     private CommandHandlerRegistry $registry;
 
+    /**
+     * @param CommandHandlerInterface[] $handlers
+     */
     public function __construct(iterable $handlers)
     {
         $this->registry = new CommandHandlerRegistry();
         $this->registerHandlers($handlers);
-    }
-
-    private function dispatch(CommandInterface $command): void
-    {
-        $handler = $this->registry->get(get_class($command));
-
-        if (!$handler) {
-            throw new NoHandlerForMessageException(sprintf(
-                'No handler for message "%s".',
-                get_class($command)
-            ));
-        }
-
-        $handler->handle($command);
     }
 
     public function handle(CommandInterface $command): void
@@ -38,7 +27,20 @@ class SymfonyCommandBus implements CommandBusInterface
         $this->dispatch($command);
     }
 
+    private function dispatch(CommandInterface $command): void
+    {
+        $handler = $this->registry->get($command::class);
 
+        if (!$handler) {
+            throw new NoHandlerForMessageException(\sprintf('No handler for message "%s".', $command::class));
+        }
+
+        $handler->handle($command);
+    }
+
+    /**
+     * @param CommandHandlerInterface[] $handlers
+     */
     private function registerHandlers(iterable $handlers): void
     {
         foreach ($handlers as $handler) {
@@ -52,7 +54,7 @@ class SymfonyCommandBus implements CommandBusInterface
 
     private function registerHandlerForSupportedCommands(CommandHandlerInterface $handler): void
     {
-        $handlerClass = get_class($handler);
+        $handlerClass = $handler::class;
         $commandClass = $this->getCommandClassFromHandlerClass($handlerClass);
 
         if ($commandClass && class_exists($commandClass)) {
@@ -63,10 +65,9 @@ class SymfonyCommandBus implements CommandBusInterface
     private function getCommandClassFromHandlerClass(string $handlerClass): ?string
     {
         if (str_ends_with($handlerClass, 'Handler')) {
-            return substr($handlerClass, 0, -7);
+            return mb_substr($handlerClass, 0, -7);
         }
 
         return null;
     }
 }
-

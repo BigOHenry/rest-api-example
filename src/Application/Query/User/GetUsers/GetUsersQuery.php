@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\Query\User\GetUsers;
 
-class GetUsersQuery
+use App\Application\Bus\Query\QueryInterface;
+
+readonly class GetUsersQuery implements QueryInterface
 {
 }

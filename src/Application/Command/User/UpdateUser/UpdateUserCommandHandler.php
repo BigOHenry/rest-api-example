@@ -9,7 +9,6 @@ use App\Application\Bus\Command\CommandInterface;
 use App\Domain\User\Exception\UserNotFoundException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 
-
 final readonly class UpdateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(

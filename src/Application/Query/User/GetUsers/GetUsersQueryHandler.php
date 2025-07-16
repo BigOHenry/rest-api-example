@@ -17,18 +17,6 @@ readonly class GetUsersQueryHandler implements QueryHandlerInterface
 
     public function handle(QueryInterface $query): GetUsersQueryResult
     {
-        $users = $this->userRepository->findAll();
-
-        $usersArray = array_map(
-            static fn ($user) => [
-                'id' => (int) $user->getId(),
-                'email' => $user->getEmail(),
-                'name' => $user->getName(),
-                'role' => $user->getRole()->value,
-            ],
-            $users
-        );
-
-        return new GetUsersQueryResult(users: $usersArray);
+        return new GetUsersQueryResult(users: $this->userRepository->findAll());
     }
 }

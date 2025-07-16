@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\Put;
 use App\Domain\User\Entity\User;
 use App\Infrastructure\Controller\Api\User\CreateUserController;
 use App\Infrastructure\Controller\Api\User\DeleteUserController;
+use App\Infrastructure\Controller\Api\User\GetUserController;
 use App\Infrastructure\Controller\Api\User\GetUsersController;
 use App\Infrastructure\Controller\Api\User\UpdateUserController;
 
@@ -27,8 +28,9 @@ use App\Infrastructure\Controller\Api\User\UpdateUserController;
         ),
         new Get(
             uriTemplate: '/users/{id}',
+            controller: GetUserController::class,
             normalizationContext: ['groups' => ['user:read']],
-            security: "is_granted('ROLE_ADMIN') or object == user"
+            security: "is_granted('ROLE_ADMIN')"
         ),
         new Post(
             controller: CreateUserController::class,

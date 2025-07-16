@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\CommandBus;
 
-use App\Application\Bus\Command\CommandBusInterface;
-use App\Application\Bus\Command\CommandHandlerInterface;
 use App\Application\Bus\Command\CommandInterface;
+use App\Application\Bus\Command\CreationCommandBusInterface;
+use App\Application\Bus\Command\CreationCommandHandlerInterface;
 use App\Application\Exception\HandlerNotFoundException;
 
-class SymfonyCommandBus implements CommandBusInterface
+class SymfonyCreationCommandBus implements CreationCommandBusInterface
 {
-    private CommandHandlerRegistry $registry;
+    private CreationCommandHandlerRegistry $registry;
 
     /**
-     * @param CommandHandlerInterface[] $handlers
+     * @param CreationCommandHandlerInterface[] $handlers
      */
     public function __construct(iterable $handlers)
     {
-        $this->registry = new CommandHandlerRegistry();
+        $this->registry = new CreationCommandHandlerRegistry();
         $this->registerHandlers(handlers: $handlers);
     }
 
-    public function handle(CommandInterface $command): void
+    public function handle(CommandInterface $command): int
     {
-        $this->dispatch(command: $command);
+        return $this->dispatch(command: $command);
     }
 
-    private function dispatch(CommandInterface $command): void
+    private function dispatch(CommandInterface $command): int
     {
         $handler = $this->registry->get(commandClass: $command::class);
 
@@ -35,16 +35,16 @@ class SymfonyCommandBus implements CommandBusInterface
             throw HandlerNotFoundException::forCommand(commandClass: $command::class);
         }
 
-        $handler->handle($command);
+        return $handler->handle($command);
     }
 
     /**
-     * @param CommandHandlerInterface[] $handlers
+     * @param CreationCommandHandlerInterface[] $handlers
      */
     private function registerHandlers(iterable $handlers): void
     {
         foreach ($handlers as $handler) {
-            if (!$handler instanceof CommandHandlerInterface) {
+            if (!$handler instanceof CreationCommandHandlerInterface) {
                 continue;
             }
 
@@ -52,7 +52,7 @@ class SymfonyCommandBus implements CommandBusInterface
         }
     }
 
-    private function registerHandlerForSupportedCommands(CommandHandlerInterface $handler): void
+    private function registerHandlerForSupportedCommands(CreationCommandHandlerInterface $handler): void
     {
         $handlerClass = $handler::class;
         $commandClass = $this->getCommandClassFromHandlerClass(handlerClass: $handlerClass);

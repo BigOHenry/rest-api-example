@@ -8,7 +8,8 @@ use App\Application\Bus\Command\CommandInterface;
 
 final readonly class DeleteUserCommand implements CommandInterface
 {
-    public function __construct(public int $id)
-    {
+    public function __construct(
+        public int $id,
+    ) {
     }
 }

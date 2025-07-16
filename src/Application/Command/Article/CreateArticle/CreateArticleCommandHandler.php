@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Application\Command\Article\CreateArticle;
 
-use App\Application\Bus\Command\CommandHandlerInterface;
 use App\Application\Bus\Command\CommandInterface;
+use App\Application\Bus\Command\CreationCommandHandlerInterface;
 use App\Domain\Article\Entity\Article;
 use App\Domain\Article\Exception\ArticleAlreadyExistsException;
 use App\Domain\Article\Repository\ArticleRepositoryInterface;
 use App\Domain\User\Exception\UserNotFoundException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 
-readonly class CreateArticleCommandHandler implements CommandHandlerInterface
+readonly class CreateArticleCommandHandler implements CreationCommandHandlerInterface
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,
@@ -20,7 +20,7 @@ readonly class CreateArticleCommandHandler implements CommandHandlerInterface
     ) {
     }
 
-    public function handle(CommandInterface $command): void
+    public function handle(CommandInterface $command): int
     {
         \assert($command instanceof CreateArticleCommand);
 
@@ -41,5 +41,7 @@ readonly class CreateArticleCommandHandler implements CommandHandlerInterface
         );
 
         $this->articleRepository->save($article);
+
+        return (int) $article->getId();
     }
 }

@@ -8,7 +8,7 @@ use App\Application\Bus\Query\QueryBusInterface;
 use App\Application\Bus\Query\QueryHandlerInterface;
 use App\Application\Bus\Query\QueryInterface;
 use App\Application\Bus\Query\QueryResultInterface;
-use Symfony\Component\Messenger\Exception\NoHandlerForMessageException;
+use App\Application\Exception\HandlerNotFoundException;
 
 final readonly class SymfonyQueryBus implements QueryBusInterface
 {
@@ -33,7 +33,7 @@ final readonly class SymfonyQueryBus implements QueryBusInterface
         $handler = $this->registry->get($query::class);
 
         if (!$handler) {
-            throw new NoHandlerForMessageException(\sprintf('No handler for message "%s".', $query::class));
+            throw HandlerNotFoundException::forQuery(queryClass: $query::class);
         }
 
         return $handler->handle($query);
@@ -65,8 +65,8 @@ final readonly class SymfonyQueryBus implements QueryBusInterface
 
     private function getQueryClassFromHandlerClass(string $handlerClass): ?string
     {
-        if (str_ends_with($handlerClass, 'Handler')) {
-            return mb_substr($handlerClass, 0, -7);
+        if (str_ends_with(haystack: $handlerClass, needle: 'Handler')) {
+            return mb_substr(string: $handlerClass, start: 0, length: -7);
         }
 
         return null;

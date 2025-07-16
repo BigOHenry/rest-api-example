@@ -34,8 +34,18 @@ services:
     App\Application\Bus\Command\CommandBusInterface:
         alias: App\Infrastructure\CommandBus\SymfonyCommandBus
 
+    # Command Bus
+    App\Infrastructure\CommandBus\SymfonyCreationCommandBus:
+        arguments:
+            - !tagged_iterator command.handler
+
+    App\Application\Bus\Command\CreationCommandBusInterface:
+        alias: App\Infrastructure\CommandBus\SymfonyCreationCommandBus
+
     _instanceof:
         App\Application\Bus\Command\CommandHandlerInterface:
+            tags: ['command.handler']
+        App\Application\Bus\Command\CreationCommandHandlerInterface:
             tags: ['command.handler']
         App\Application\Bus\Query\QueryHandlerInterface:
             tags: ['query.handler']

@@ -21,7 +21,6 @@
         "symfony/dotenv": "7.2.*",
         "symfony/flex": "^2.8.1",
         "symfony/framework-bundle": "7.2.*",
-        "symfony/messenger": "7.2.*",
         "symfony/password-hasher": "7.2.*",
         "symfony/runtime": "7.2.*",
         "symfony/security-bundle": "7.2.*",

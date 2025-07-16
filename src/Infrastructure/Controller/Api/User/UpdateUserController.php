@@ -6,11 +6,10 @@ namespace App\Infrastructure\Controller\Api\User;
 
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\User\UpdateUser\UpdateUserCommand;
-use App\Domain\User\ValueObject\UserRole;
+use App\Application\Exception\ValidationErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
 
 class UpdateUserController extends AbstractController
 {
@@ -19,45 +18,31 @@ class UpdateUserController extends AbstractController
     ) {
     }
 
-    #[Route('/users/{id}', name: 'update_user', methods: ['PUT'])]
-    public function update(int $id, Request $request): JsonResponse
+    public function __invoke(int $id, Request $request): JsonResponse
     {
         try {
-            $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+            $data = json_decode(json: $request->getContent(), associative: true, flags: \JSON_THROW_ON_ERROR);
+            $command = UpdateUserCommand::fromApiArray(userId: $id, data: $data);
+            $this->commandBus->handle(command: $command);
 
-            $command = new UpdateUserCommand(
-                id: $id,
-                email: $data['email'],
-                name: $data['name'],
-                role: UserRole::from($data['role'])
-            );
-
-            $this->commandBus->handle($command);
-
-            return new JsonResponse([
+            return new JsonResponse(data: [
                 'message' => 'User updated successfully',
-                'user' => [
-                    'id' => $id,
-                    'email' => $data['email'],
-                    'name' => $data['name'],
-                    'role' => $data['role'],
-                ],
-            ], 200);
+            ], status: 200);
         } catch (\JsonException $e) {
-            return new JsonResponse([
+            return new JsonResponse(data: [
                 'error' => 'Invalid JSON format',
                 'message' => $e->getMessage(),
-            ], 400);
-        } catch (\ValueError $e) {
-            return new JsonResponse([
-                'error' => 'Invalid role value',
-                'message' => 'Role must be one of: admin, author, reader',
-            ], 400);
+            ], status: 400);
+        } catch (ValidationErrorException $e) {
+            return new JsonResponse(data: [
+                'error' => $e->getMessage(),
+                'message' => $e->getErrors(),
+            ], status: 400);
         } catch (\Exception $e) {
-            return new JsonResponse([
+            return new JsonResponse(data: [
                 'error' => 'User update failed',
                 'message' => $e->getMessage(),
-            ], 400);
+            ], status: 400);
         }
     }
 }

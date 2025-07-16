@@ -20,14 +20,14 @@ class CreateUserController extends AbstractController
 
     public function __invoke(Request $request): JsonResponse
     {
-        try {
-            $data = json_decode($request->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+        $data = json_decode($request->getContent(), associative: true);
 
+        try {
             $command = new CreateUserCommand(
-                $data['email'] ?? '',
-                $data['password'] ?? '',
-                $data['name'] ?? '',
-                isset($data['role']) ? UserRole::from($data['role']) : UserRole::READER
+                $data['email'],
+                $data['password'],
+                $data['name'],
+                UserRole::from($data['role'])
             );
 
             $this->commandBus->handle($command);
@@ -37,7 +37,7 @@ class CreateUserController extends AbstractController
                 'user' => [
                     'email' => $data['email'],
                     'name' => $data['name'],
-                    'role' => $data['role'] ?? 'reader',
+                    'role' => $data['role'],
                 ],
             ], 201);
         } catch (\Exception $e) {

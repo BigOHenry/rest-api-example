@@ -15,7 +15,7 @@ readonly class CreateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
-        private PasswordHashingServiceInterface $passwordHashingService
+        private PasswordHashingServiceInterface $passwordHashingService,
     ) {
     }
 

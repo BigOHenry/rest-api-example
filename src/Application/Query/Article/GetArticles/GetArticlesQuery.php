@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\Query\Article\GetArticles;
 
-class GetArticlesQuery
+use App\Application\Bus\Query\QueryInterface;
+
+class GetArticlesQuery implements QueryInterface
 {
 }

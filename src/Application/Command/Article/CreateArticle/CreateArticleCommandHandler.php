@@ -9,14 +9,11 @@ use App\Application\Bus\Command\CreationCommandHandlerInterface;
 use App\Domain\Article\Entity\Article;
 use App\Domain\Article\Exception\ArticleAlreadyExistsException;
 use App\Domain\Article\Repository\ArticleRepositoryInterface;
-use App\Domain\User\Exception\UserNotFoundException;
-use App\Domain\User\Repository\UserRepositoryInterface;
 
 readonly class CreateArticleCommandHandler implements CreationCommandHandlerInterface
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,
-        private UserRepositoryInterface $userRepository,
     ) {
     }
 
@@ -24,23 +21,18 @@ readonly class CreateArticleCommandHandler implements CreationCommandHandlerInte
     {
         \assert($command instanceof CreateArticleCommand);
 
-        $existingArticle = $this->articleRepository->findByTitle($command->title);
+        $existingArticle = $this->articleRepository->findByTitle(title: $command->title);
         if ($existingArticle) {
             throw ArticleAlreadyExistsException::withTitle();
         }
 
-        $user = $this->userRepository->findByEmail($command->authorEmail);
-        if ($user === null) {
-            throw UserNotFoundException::withEmail($command->authorEmail);
-        }
-
         $article = Article::create(
-            $command->title,
-            $command->content,
-            $user,
+            title: $command->title,
+            content: $command->content,
+            author: $command->user,
         );
 
-        $this->articleRepository->save($article);
+        $this->articleRepository->save(article: $article);
 
         return (int) $article->getId();
     }

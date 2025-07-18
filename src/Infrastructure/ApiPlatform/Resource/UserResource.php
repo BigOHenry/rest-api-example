@@ -23,35 +23,24 @@ use App\Infrastructure\Controller\Api\User\UpdateUserController;
     operations: [
         new GetCollection(
             controller: GetUsersController::class,
-            normalizationContext: ['groups' => ['user:read']],
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Get(
             uriTemplate: '/users/{id}',
             controller: GetUserController::class,
-            normalizationContext: ['groups' => ['user:read']],
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Post(
             controller: CreateUserController::class,
-            denormalizationContext: ['groups' => ['user:write']],
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Put(
             uriTemplate: '/users/{id}',
             controller: UpdateUserController::class,
-            denormalizationContext: ['groups' => ['user:write']],
-            security: "is_granted('ROLE_ADMIN')"
         ),
         new Delete(
             uriTemplate: '/users/{id}',
             controller: DeleteUserController::class,
-            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     class: User::class,
-    normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']]
 )]
 class UserResource
 {

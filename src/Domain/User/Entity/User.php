@@ -8,7 +8,6 @@ use App\Domain\User\ValueObject\UserRole;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'appuser')]
@@ -17,23 +16,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['user:read'])]
     private ?int $id;
 
     #[ORM\Column(name: 'email', type: 'string', length: 255, unique: true)]
-    #[Groups(['user:read', 'user:write'])]
     private string $email;
 
     #[ORM\Column(type: 'string', length: 200, nullable: false)]
-    #[Groups(['user:write'])]
     private string $password;
 
     #[ORM\Column(type: 'string', length: 200, nullable: false)]
-    #[Groups(['user:read', 'user:write'])]
     private string $name;
 
     #[ORM\Column(type: 'string', nullable: false, enumType: UserRole::class)]
-    #[Groups(['user:read', 'user:write'])]
     private UserRole $role;
 
     protected function __construct(?int $id = null)
@@ -104,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // TODO: Implement eraseCredentials() method.
+        // nothing to erase
     }
 
     public function getUserIdentifier(): string

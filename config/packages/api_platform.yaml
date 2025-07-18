@@ -20,6 +20,8 @@ api_platform:
 
     swagger:
         versions: [3]
+        swagger_ui_extra_configuration:
+            defaultModelsExpandDepth: -1
 
     doctrine:
         enabled: true

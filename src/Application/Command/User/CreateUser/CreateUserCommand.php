@@ -31,6 +31,8 @@ final readonly class CreateUserCommand implements CommandInterface
         foreach ($requiredFields as $field) {
             if (!isset($data[$field]) || empty(trim($data[$field]))) {
                 $missingFields[] = $field;
+            } else {
+                $data[$field] = trim($data[$field]);
             }
         }
 
@@ -69,9 +71,9 @@ final readonly class CreateUserCommand implements CommandInterface
         }
 
         return new self(
-            email: trim($data['email']),
-            password: trim($data['password']),
-            name: trim($data['name']),
+            email: $data['email'],
+            password: $data['password'],
+            name: $data['name'],
             role: UserRole::from($data['role'])
         );
     }

@@ -20,7 +20,7 @@ readonly class GetUserQueryResult implements QueryResultInterface
     }
 
     /**
-     * @return array<string, string|int>|null
+     * @return array<array<string, string|int>>|null
      */
     public function toArray(): ?array
     {
@@ -29,10 +29,12 @@ readonly class GetUserQueryResult implements QueryResultInterface
         }
 
         return [
-            'id' => (int) $this->user->getId(),
-            'email' => $this->user->getEmail(),
-            'name' => $this->user->getName(),
-            'role' => $this->user->getRole()->value,
+            'user' => [
+                'id' => (int) $this->user->getId(),
+                'email' => $this->user->getEmail(),
+                'name' => $this->user->getName(),
+                'role' => $this->user->getRole()->value,
+            ],
         ];
     }
 }

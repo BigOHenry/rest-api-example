@@ -7,7 +7,6 @@ namespace App\Infrastructure\Controller\Api\User;
 use App\Application\Bus\Query\QueryBusInterface;
 use App\Application\Query\User\GetUser\GetUserQuery;
 use App\Application\Query\User\GetUser\GetUserQueryResult;
-use App\Domain\User\Exception\UserNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -30,8 +29,6 @@ class GetUserController extends AbstractController
             }
 
             return new JsonResponse(data: $result->toArray());
-        } catch (UserNotFoundException) {
-            return new JsonResponse(data: ['error' => 'User not found'], status: 404);
         } catch (\Exception $e) {
             return new JsonResponse(data: [
                 'error' => 'Unexpected error',

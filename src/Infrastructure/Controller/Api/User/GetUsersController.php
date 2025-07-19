@@ -26,7 +26,7 @@ class GetUsersController extends BaseController
     #[Route('api/users', name: 'api_users_list', methods: ['GET'])]
     #[OA\Get(
         path: '/api/users',
-        description: 'Retrieve a list of users from the system with optional pagination and filtering',
+        description: 'Retrieve a list of users',
         summary: 'Get list of users',
         security: [['Bearer' => []]],
         tags: ['Users'],
@@ -36,11 +36,6 @@ class GetUsersController extends BaseController
                 description: 'Users retrieved successfully',
                 content: new OA\JsonContent(
                     properties: [
-                        'message' => new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Users retrieved successfully'
-                        ),
                         'users' => new OA\Property(
                             property: 'users',
                             type: 'array',
@@ -65,7 +60,7 @@ class GetUsersController extends BaseController
                                     'role' => new OA\Property(
                                         property: 'role',
                                         type: 'string',
-                                        example: 'ROLE_USER'
+                                        example: 'ROLE_READER'
                                     ),
                                 ],
                                 type: 'object'

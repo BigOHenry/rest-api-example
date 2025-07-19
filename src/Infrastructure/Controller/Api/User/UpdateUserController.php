@@ -26,7 +26,7 @@ class UpdateUserController extends BaseController
     #[Route('api/users/{id}', name: 'api_users_put', methods: ['PUT'])]
     #[OA\Put(
         path: '/api/users/{id}',
-        description: 'Update an existing user in the system with new data',
+        description: 'Update an existing user',
         summary: 'Update user',
         security: [['Bearer' => []]],
         requestBody: new OA\RequestBody(
@@ -52,8 +52,8 @@ class UpdateUserController extends BaseController
                         property: 'role',
                         description: 'Updated user role',
                         type: 'string',
-                        enum: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_READER'],
-                        example: 'ROLE_USER'
+                        enum: ['ROLE_AUTHOR', 'ROLE_ADMIN', 'ROLE_READER'],
+                        example: 'ROLE_AUTHOR'
                     ),
                 ],
                 type: 'object'
@@ -116,7 +116,7 @@ class UpdateUserController extends BaseController
                             property: 'message',
                             type: 'array',
                             items: new OA\Items(type: 'string'),
-                            example: ['Email is already in use', 'Name is required']
+                            example: ['name' => 'Name must be at least 2 characters long', 'email' => 'Invalid email format']
                         ),
                     ],
                     type: 'object'
@@ -134,7 +134,7 @@ class UpdateUserController extends BaseController
             $command = UpdateUserCommand::fromApiArray(userId: $id, data: $data);
             $this->commandBus->handle(command: $command);
 
-            return $this->success('User updated successfully');
+            return $this->success(message: 'User updated successfully');
         } catch (\JsonException) {
             return $this->invalidJson();
         } catch (ValidationErrorDomainException $e) {

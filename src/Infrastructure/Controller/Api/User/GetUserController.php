@@ -49,11 +49,6 @@ class GetUserController extends BaseController
                 description: 'User retrieved successfully',
                 content: new OA\JsonContent(
                     properties: [
-                        'message' => new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'User retrieved successfully'
-                        ),
                         'user' => new OA\Property(
                             property: 'user',
                             properties: [
@@ -76,7 +71,7 @@ class GetUserController extends BaseController
                                 'role' => new OA\Property(
                                     property: 'role',
                                     type: 'string',
-                                    example: 'ROLE_USER'
+                                    example: 'ROLE_AUTHOR'
                                 ),
                             ],
                             type: 'object'

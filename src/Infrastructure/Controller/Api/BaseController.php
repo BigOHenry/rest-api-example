@@ -71,6 +71,14 @@ class BaseController extends AbstractController
         );
     }
 
+    public function notAuthenticated(): JsonResponse
+    {
+        return new JsonResponse(
+            data: ['error' => 'User is not authenticated'],
+            status: Response::HTTP_UNAUTHORIZED
+        );
+    }
+
     protected function exception(string $message): JsonResponse
     {
         return new JsonResponse(

@@ -30,7 +30,7 @@ readonly class DeleteArticleCommandHandler implements CommandHandlerInterface
             throw ArticleNotFoundDomainException::withId(id: $command->id);
         }
 
-        if ($this->articleAuthorizationService->canModifyArticle(user: $this->security->getUser(), article: $article)) {
+        if (!$this->articleAuthorizationService->canModifyArticle(user: $this->security->getUser(), article: $article)) {
             throw ArticleAccessDeniedDomainException::forArticleManagement();
         }
 

@@ -10,6 +10,7 @@ use App\Application\Query\User\GetUsers\GetUsersQueryResult;
 use App\Domain\User\Exception\UserDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
 class GetUsersController extends AbstractController
 {
@@ -17,6 +18,8 @@ class GetUsersController extends AbstractController
         private readonly QueryBusInterface $queryBus,
     ) {
     }
+
+    #[Route('api/users', name: 'api_users_list', methods: ['GET'])]
 
     public function __invoke(): JsonResponse
     {

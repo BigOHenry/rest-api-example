@@ -10,6 +10,7 @@ use App\Application\Query\Article\GetArticles\GetArticlesQueryResult;
 use App\Domain\Article\Exception\ArticleDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
 class GetArticlesController extends AbstractController
 {
@@ -18,6 +19,7 @@ class GetArticlesController extends AbstractController
     ) {
     }
 
+    #[Route('api/articles', name: 'api_articles_list', methods: ['GET'])]
     public function __invoke(): JsonResponse
     {
         try {

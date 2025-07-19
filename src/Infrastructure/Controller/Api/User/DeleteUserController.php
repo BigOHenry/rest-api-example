@@ -9,6 +9,8 @@ use App\Application\Command\User\DeleteUser\DeleteUserCommand;
 use App\Domain\User\Exception\UserNotFoundDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
+
 
 class DeleteUserController extends AbstractController
 {
@@ -17,6 +19,7 @@ class DeleteUserController extends AbstractController
     ) {
     }
 
+    #[Route('api/users', name: 'api_users_delete', methods: ['DELETE'])]
     public function __invoke(int $id): JsonResponse
     {
         try {

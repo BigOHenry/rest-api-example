@@ -12,6 +12,7 @@ use App\Domain\User\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
 
 class UpdateArticleController extends AbstractController
 {
@@ -19,6 +20,7 @@ class UpdateArticleController extends AbstractController
         private readonly CommandBusInterface $commandBus,
     ) {
     }
+    #[Route('api/articles/{id}', name: 'api_articles_put', methods: ['PUT'])]
 
     public function __invoke(int $id, Request $request): JsonResponse
     {

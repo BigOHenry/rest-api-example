@@ -11,6 +11,7 @@ use App\Domain\User\Exception\UserDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
 
 class UpdateUserController extends AbstractController
 {
@@ -18,6 +19,8 @@ class UpdateUserController extends AbstractController
         private readonly CommandBusInterface $commandBus,
     ) {
     }
+
+    #[Route('api/users/{id}', name: 'api_users_put', methods: ['PUT'])]
 
     public function __invoke(int $id, Request $request): JsonResponse
     {

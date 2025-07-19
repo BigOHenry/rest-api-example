@@ -9,6 +9,7 @@ use App\Application\Command\Article\DeleteArticle\DeleteArticleCommand;
 use App\Domain\Article\Exception\ArticleDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
 
 class DeleteArticleController extends AbstractController
 {
@@ -17,6 +18,7 @@ class DeleteArticleController extends AbstractController
     ) {
     }
 
+    #[Route('api/articles', name: 'api_articles_delete', methods: ['DELETE'])]
     public function __invoke(int $id): JsonResponse
     {
         try {

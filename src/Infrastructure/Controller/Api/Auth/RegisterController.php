@@ -56,10 +56,10 @@ class RegisterController extends BaseController
                     ),
                     'role' => new OA\Property(
                         property: 'role',
-                        description: 'User role (optional, defaults to ROLE_USER)',
+                        description: 'User role',
                         type: 'string',
-                        enum: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_READER'],
-                        example: 'ROLE_USER'
+                        enum: ['ROLE_AUTHOR', 'ROLE_ADMIN', 'ROLE_READER'],
+                        example: 'ROLE_READER'
                     ),
                 ],
                 type: 'object'

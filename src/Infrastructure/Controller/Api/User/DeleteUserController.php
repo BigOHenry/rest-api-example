@@ -25,7 +25,7 @@ class DeleteUserController extends BaseController
     #[Route('api/users/{id}', name: 'api_users_delete', methods: ['DELETE'])]
     #[OA\Delete(
         path: '/api/users/{id}',
-        description: 'Delete an existing user from the system',
+        description: 'Delete an existing user',
         summary: 'Delete user',
         security: [['Bearer' => []]],
         tags: ['Users'],

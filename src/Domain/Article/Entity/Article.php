@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'article')]
-#[ORM\HasLifecycleCallbacks]
 class Article
 {
     #[ORM\Id]
@@ -49,10 +48,7 @@ class Article
         return $article;
     }
 
-    /**
-     * @ORM\PreUpdate()
-     */
-    public function onPreUpdate(): void
+    public function updated(): void
     {
         $this->updatedAt = new \DateTime();
     }
@@ -70,6 +66,7 @@ class Article
     public function setTitle(string $title): void
     {
         $this->title = $title;
+        $this->updated();
     }
 
     public function getContent(): string
@@ -80,16 +77,12 @@ class Article
     public function setContent(string $content): void
     {
         $this->content = $content;
+        $this->updated();
     }
 
     public function getAuthor(): User
     {
         return $this->author;
-    }
-
-    public function setAuthor(User $author): void
-    {
-        $this->author = $author;
     }
 
     public function getCreatedAt(): \DateTime

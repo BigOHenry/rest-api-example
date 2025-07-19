@@ -33,7 +33,7 @@ class GetUserController extends AbstractController
         } catch (UserDomainException $e) {
             return new JsonResponse(data: [
                 'error' => $e->getMessage(),
-            ], status: $e->getCode());
+            ], status: $e->getCode() ?? 400);
         } catch (\Exception $e) {
             return new JsonResponse(data: [
                 'error' => 'Unexpected error',

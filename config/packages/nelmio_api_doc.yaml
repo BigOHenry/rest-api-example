@@ -1,0 +1,18 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Blog REST API EXAMPLE
+            description: Example of REST API for blog with Domain-Driven Design and CQRS
+            version: 1.0.0
+        paths: {}
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+    areas:
+        path_patterns: # an array of regexps (document only routes under /api, except /api/doc)
+            - ^/api(?!/doc$)
+#        host_patterns: # document only routes with a host of the form api.*
+#            - ^api\.

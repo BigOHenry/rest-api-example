@@ -24,6 +24,10 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\Infrastructure\Controller\Api\:
+        resource: '../src/Infrastructure/Controller/Api/'
+        tags: ['controller.service_arguments']
+
     App\Infrastructure\ApiPlatform\OpenApiFactoryDecorator:
 
     # Command Bus
@@ -57,13 +61,6 @@ services:
 
     App\Application\Bus\Query\QueryBusInterface:
         alias: App\Infrastructure\QueryBus\SymfonyQueryBus
-
-    App\Infrastructure\CommandBus\Middleware\ValidationMiddleware:
-        arguments: ['@validator']
-
-    App\Infrastructure\ApiPlatform\Resource\:
-        resource: '../src/Infrastructure/ApiPlatform/Resource/'
-        tags: ['api_platform.resource']
 
     App\Domain\User\Service\PasswordHashingServiceInterface:
         class: App\Infrastructure\Service\PasswordHashingService

@@ -1,18 +1,18 @@
-#controllers:
-#    resource:
-#        path: ../src/Infrastructure/Controller/Api/
-#        namespace: App\Infrastructure\Controller\Api
-#    type: attribute
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
 
-#auth_routes:
-#    resource: '../src/Infrastructure/Controller/Api/Auth/'
-#    type: attribute
-#    prefix: /api
-
-api_platform:
-    resource: .
-    type: api_platform
-    prefix: /api
+app.swagger:
+    path: /api/doc.json
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger }
 
 api_login_check:
     path: /api/auth/login
+
+controllers:
+    resource:
+        path: ../src/Infrastructure/Controller/
+        namespace: App\Infrastructure\Controller
+    type: attribute

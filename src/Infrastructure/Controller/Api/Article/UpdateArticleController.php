@@ -6,8 +6,8 @@ namespace App\Infrastructure\Controller\Api\Article;
 
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\Article\UpdateArticle\UpdateArticleCommand;
-use App\Application\Exception\ValidationErrorException;
 use App\Domain\Article\Exception\ArticleDomainException;
+use App\Domain\Shared\Exception\ValidationErrorDomainException;
 use App\Domain\User\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,8 +20,8 @@ class UpdateArticleController extends AbstractController
         private readonly CommandBusInterface $commandBus,
     ) {
     }
-    #[Route('api/articles/{id}', name: 'api_articles_put', methods: ['PUT'])]
 
+    #[Route('api/articles/{id}', name: 'api_articles_put', methods: ['PUT'])]
     public function __invoke(int $id, Request $request): JsonResponse
     {
         try {
@@ -45,7 +45,7 @@ class UpdateArticleController extends AbstractController
                 'error' => 'Invalid JSON format',
                 'message' => $e->getMessage(),
             ], status: 400);
-        } catch (ValidationErrorException $e) {
+        } catch (ValidationErrorDomainException $e) {
             return new JsonResponse(data: [
                 'error' => $e->getMessage(),
                 'message' => $e->getErrors(),

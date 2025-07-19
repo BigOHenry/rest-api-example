@@ -6,6 +6,7 @@ namespace App\Infrastructure\Repository\Doctrine;
 
 use App\Domain\User\Entity\User;
 use App\Domain\User\Repository\UserRepositoryInterface;
+use App\Domain\User\ValueObject\UserRole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,5 +40,10 @@ class DoctrineUserRepository extends ServiceEntityRepository implements UserRepo
     {
         $this->getEntityManager()->remove($user);
         $this->getEntityManager()->flush();
+    }
+
+    public function findAllByRole(UserRole $role): array
+    {
+        return $this->findBy(['role' => $role->value]);
     }
 }

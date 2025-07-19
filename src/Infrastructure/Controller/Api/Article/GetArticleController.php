@@ -8,11 +8,11 @@ use App\Application\Bus\Query\QueryBusInterface;
 use App\Application\Query\Article\GetArticle\GetArticleQuery;
 use App\Application\Query\Article\GetArticle\GetArticleQueryResult;
 use App\Domain\Article\Exception\ArticleDomainException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Infrastructure\Controller\Api\BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-class GetArticleController extends AbstractController
+class GetArticleController extends BaseController
 {
     public function __construct(
         private readonly QueryBusInterface $queryBus,
@@ -28,7 +28,7 @@ class GetArticleController extends AbstractController
             \assert($result instanceof GetArticleQueryResult);
 
             if (!$result->isArticleFound()) {
-                return new JsonResponse(data: ['error' => 'Article not found'], status: 404);
+                return $this->notFound();
             }
 
             return new JsonResponse(data: $result->toArray());

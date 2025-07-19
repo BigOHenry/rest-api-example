@@ -7,11 +7,13 @@ namespace App\Infrastructure\Controller\Api\Article;
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\Article\DeleteArticle\DeleteArticleCommand;
 use App\Domain\Article\Exception\ArticleDomainException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Domain\Shared\Exception\ValidationErrorDomainException;
+use App\Domain\User\Exception\UserDomainException;
+use App\Infrastructure\Controller\Api\BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-class DeleteArticleController extends AbstractController
+class DeleteArticleController extends BaseController
 {
     public function __construct(
         private readonly CommandBusInterface $commandBus,
@@ -25,18 +27,15 @@ class DeleteArticleController extends AbstractController
             $command = new DeleteArticleCommand(id: $id);
             $this->commandBus->handle(command: $command);
 
-            return new JsonResponse(data: [
-                'message' => 'Article deleted successfully',
-            ]);
-        } catch (ArticleDomainException $e) {
-            return new JsonResponse(data: [
-                'error' => $e->getMessage(),
-            ], status: $e->getCode() ?? 400);
+            return $this->success(message: 'Article deleted successfully');
+        } catch (ArticleDomainException) {
+            return $this->notFound();
+        } catch (ValidationErrorDomainException $e) {
+            return $this->error(error: $e->getMessage(), message: $e->getErrors());
+        } catch (UserDomainException $e) {
+            return $this->error(error: $e->getMessage(), code: $e->getCode());
         } catch (\Exception $e) {
-            return new JsonResponse(data: [
-                'error' => 'Article deletion failed',
-                'message' => $e->getMessage(),
-            ], status: 400);
+            return $this->exception(message: $e->getMessage());
         }
     }
 }

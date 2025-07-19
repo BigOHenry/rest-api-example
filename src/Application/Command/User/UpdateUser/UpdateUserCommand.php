@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Command\User\UpdateUser;
 
 use App\Application\Bus\Command\CommandInterface;
-use App\Application\Exception\ValidationErrorException;
+use App\Domain\User\Exception\UserValidationDomainDomainException;
 use App\Domain\User\Validator\UserValidator;
 use App\Domain\User\ValueObject\UserRole;
 
@@ -22,7 +22,7 @@ final readonly class UpdateUserCommand implements CommandInterface
     /**
      * @param array<string, string> $data
      *
-     * @throws ValidationErrorException
+     * @throws UserValidationDomainDomainException
      */
     public static function fromApiArray(int $userId, array $data): self
     {
@@ -36,7 +36,7 @@ final readonly class UpdateUserCommand implements CommandInterface
         }
 
         if (!empty($missingFields)) {
-            throw new ValidationErrorException(message: 'Missing required fields: ' . implode(', ', $missingFields));
+            throw new UserValidationDomainDomainException(message: 'Missing required fields: ' . implode(', ', $missingFields));
         }
 
         $errors = UserValidator::validateForUpdate(
@@ -46,7 +46,7 @@ final readonly class UpdateUserCommand implements CommandInterface
         );
 
         if (!empty($errors)) {
-            throw ValidationErrorException::withErrors(errors: $errors);
+            throw UserValidationDomainDomainException::withErrors(errors: $errors);
         }
 
         return new self(

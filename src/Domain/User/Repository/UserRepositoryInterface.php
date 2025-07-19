@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\User\Repository;
 
 use App\Domain\User\Entity\User;
+use App\Domain\User\ValueObject\UserRole;
 
 interface UserRepositoryInterface
 {
@@ -13,6 +14,11 @@ interface UserRepositoryInterface
     public function findById(int $id): ?User;
 
     public function findByEmail(string $email): ?User;
+
+    /**
+     * @return array<int, User>
+     */
+    public function findAllByRole(UserRole $role): array;
 
     /**
      * @return array<int, User>

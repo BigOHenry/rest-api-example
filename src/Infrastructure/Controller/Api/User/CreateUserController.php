@@ -90,7 +90,7 @@ class CreateUserController extends BaseController
                             property: 'message',
                             type: 'array',
                             items: new OA\Items(type: 'string'),
-                            example: ['Name is required', 'Email format is invalid']
+                            example: ['name' => 'Name must be at least 2 characters long', 'email' => 'Invalid email format']
                         ),
                     ],
                     type: 'object'
@@ -108,7 +108,7 @@ class CreateUserController extends BaseController
             $command = CreateUserCommand::fromApiArray(data: $data);
             $userId = $this->commandBus->handle(command: $command);
 
-            return $this->success('User created successfully', ['user' => ['id' => $userId]]);
+            return $this->success(message: 'User created successfully', response_data: ['user' => ['id' => $userId]]);
         } catch (\JsonException) {
             return $this->invalidJson();
         } catch (ValidationErrorDomainException $e) {

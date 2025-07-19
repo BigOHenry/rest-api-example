@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Command\User\CreateUser;
+namespace App\Application\Command\User\RegisterUser;
 
 use App\Application\Bus\Command\CommandInterface;
 use App\Domain\User\Exception\UserValidationDomainDomainException;
 use App\Domain\User\Validator\UserValidator;
 use App\Domain\User\ValueObject\UserRole;
 
-final readonly class CreateUserCommand implements CommandInterface
+final readonly class RegisterUserCommand implements CommandInterface
 {
     protected function __construct(
         public string $email,

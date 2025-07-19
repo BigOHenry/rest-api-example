@@ -8,11 +8,11 @@ class UserNotFoundDomainException extends UserDomainException
 {
     public static function withId(int $id): self
     {
-        return new self(message: "User with id '{$id}' not found");
+        return new self(message: "User with id '{$id}' not found", code: 400);
     }
 
     public static function withEmail(string $email): self
     {
-        return new self(message: "User with email '{$email}' not found");
+        return new self(message: "User with email '{$email}' not found", code: 400);
     }
 }

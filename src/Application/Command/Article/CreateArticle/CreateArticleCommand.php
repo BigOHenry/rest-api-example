@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Command\Article\CreateArticle;
 
 use App\Application\Bus\Command\CommandInterface;
-use App\Application\Exception\ValidationErrorException;
+use App\Domain\Article\Exception\ArticleValidationDomainDomainException;
 use App\Domain\Article\Validator\ArticleValidator;
 use App\Domain\User\Entity\User;
 
@@ -21,7 +21,7 @@ class CreateArticleCommand implements CommandInterface
     /**
      * @param array<string, string> $data
      *
-     * @throws ValidationErrorException
+     * @throws ArticleValidationDomainDomainException
      */
     public static function fromApiArray(array $data, User $author): self
     {
@@ -37,13 +37,13 @@ class CreateArticleCommand implements CommandInterface
         }
 
         if (!empty($missingFields)) {
-            throw new ValidationErrorException(message: 'Missing required fields: ' . implode(', ', $missingFields));
+            throw new ArticleValidationDomainDomainException(message: 'Missing required fields: ' . implode(', ', $missingFields));
         }
 
         $errors = ArticleValidator::validate(title: $data['title'], content: $data['content']);
 
         if (!empty($errors)) {
-            throw ValidationErrorException::withErrors(errors: $errors);
+            throw ArticleValidationDomainDomainException::withErrors(errors: $errors);
         }
 
         return new self(

@@ -6,8 +6,8 @@ namespace App\Infrastructure\Controller\Api\Article;
 
 use App\Application\Bus\Command\CreationCommandBusInterface;
 use App\Application\Command\Article\CreateArticle\CreateArticleCommand;
-use App\Application\Exception\ValidationErrorException;
 use App\Domain\Article\Exception\ArticleDomainException;
+use App\Domain\Shared\Exception\ValidationErrorDomainException;
 use App\Domain\User\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,7 +46,7 @@ class CreateArticleController extends AbstractController
                 'error' => 'Invalid JSON format',
                 'message' => $e->getMessage(),
             ], status: 400);
-        } catch (ValidationErrorException $e) {
+        } catch (ValidationErrorDomainException $e) {
             return new JsonResponse(data: [
                 'error' => $e->getMessage(),
                 'message' => $e->getErrors(),

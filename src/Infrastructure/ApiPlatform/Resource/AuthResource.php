@@ -48,7 +48,7 @@ use App\Infrastructure\Controller\Api\Auth\RegisterController;
                                             ],
                                             'role' => [
                                                 'type' => 'string',
-                                                'example' => 'reader',
+                                                'example' => 'ROLE_READER',
                                             ],
                                         ],
                                     ]

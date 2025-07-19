@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'article')]
+#[ORM\HasLifecycleCallbacks]
 class Article
 {
     #[ORM\Id]
@@ -41,11 +42,19 @@ class Article
     public static function create(string $title, string $content, User $author): self
     {
         $article = new self();
-        $article->setTitle($title);
-        $article->setContent($content);
+        $article->setTitle(title: $title);
+        $article->setContent(content: $content);
         $article->author = $author;
 
         return $article;
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -61,7 +70,6 @@ class Article
     public function setTitle(string $title): void
     {
         $this->title = $title;
-        $this->updated();
     }
 
     public function getContent(): string
@@ -72,7 +80,6 @@ class Article
     public function setContent(string $content): void
     {
         $this->content = $content;
-        $this->updated();
     }
 
     public function getAuthor(): User
@@ -83,7 +90,6 @@ class Article
     public function setAuthor(User $author): void
     {
         $this->author = $author;
-        $this->updated();
     }
 
     public function getCreatedAt(): \DateTime
@@ -91,28 +97,13 @@ class Article
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
     public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
     protected function setId(?int $id): void
     {
         $this->id = $id;
-    }
-
-    private function updated(): void
-    {
-        $this->updatedAt = new \DateTime();
     }
 }

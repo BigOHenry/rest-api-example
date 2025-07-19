@@ -7,6 +7,7 @@ namespace App\Infrastructure\Controller\Api\User;
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\User\UpdateUser\UpdateUserCommand;
 use App\Application\Exception\ValidationErrorException;
+use App\Domain\User\Exception\UserDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,9 +39,13 @@ class UpdateUserController extends AbstractController
                 'error' => $e->getMessage(),
                 'message' => $e->getErrors(),
             ], status: 400);
+        } catch (UserDomainException $e) {
+            return new JsonResponse(data: [
+                'error' => $e->getMessage(),
+            ], status: $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse(data: [
-                'error' => 'User update failed',
+                'error' => 'User creation failed',
                 'message' => $e->getMessage(),
             ], status: 400);
         }

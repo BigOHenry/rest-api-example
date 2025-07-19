@@ -35,8 +35,8 @@ readonly class OpenApiFactoryDecorator implements OpenApiFactoryInterface
             $post = $authPath->getPost()->withTags(['Auth']);
 
             $openApi->getPaths()->addPath(
-                '/api/auth/login',
-                (new PathItem())->withPost($post),
+                path: '/api/auth/login',
+                pathItem: (new PathItem())->withPost($post),
             );
         }
 

@@ -6,40 +6,34 @@ namespace App\Application\Command\Article\DeleteArticle;
 
 use App\Application\Bus\Command\CommandHandlerInterface;
 use App\Application\Bus\Command\CommandInterface;
-use App\Application\Exception\Article\ArticleAccessDeniedException;
-use App\Domain\Article\Exception\ArticleNotFoundException;
+use App\Domain\Article\Exception\ArticleAccessDeniedDomainException;
+use App\Domain\Article\Exception\ArticleNotFoundDomainException;
 use App\Domain\Article\Repository\ArticleRepositoryInterface;
-use App\Domain\User\ValueObject\UserRole;
+use App\Domain\Article\Service\ArticleAuthorizationService;
+use Symfony\Bundle\SecurityBundle\Security;
 
 readonly class DeleteArticleCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,
+        private ArticleAuthorizationService $articleAuthorizationService,
+        private Security $security,
     ) {
     }
 
-    /**
-     * @throws ArticleAccessDeniedException
-     */
     public function handle(CommandInterface $command): void
     {
         \assert($command instanceof DeleteArticleCommand);
 
-        $article = $this->articleRepository->findById($command->id);
+        $article = $this->articleRepository->findById(id: $command->id);
         if ($article === null) {
-            throw ArticleNotFoundException::withId($command->id);
+            throw ArticleNotFoundDomainException::withId(id: $command->id);
         }
 
-        if (
-            $command->author->getRole() === UserRole::READER
-            || (
-                $command->author->getRole() === UserRole::AUTHOR
-                && $article->getAuthor()->getId() !== $command->author->getId()
-            )
-        ) {
-            throw new ArticleAccessDeniedException();
+        if ($this->articleAuthorizationService->canModifyArticle(user: $this->security->getUser(), article: $article)) {
+            throw ArticleAccessDeniedDomainException::forArticleManagement();
         }
 
-        $this->articleRepository->remove($article);
+        $this->articleRepository->remove(article: $article);
     }
 }

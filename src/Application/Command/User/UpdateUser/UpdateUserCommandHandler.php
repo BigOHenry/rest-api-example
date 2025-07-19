@@ -6,13 +6,18 @@ namespace App\Application\Command\User\UpdateUser;
 
 use App\Application\Bus\Command\CommandHandlerInterface;
 use App\Application\Bus\Command\CommandInterface;
-use App\Domain\User\Exception\UserNotFoundException;
+use App\Domain\User\Exception\UserAccessDeniedDomainException;
+use App\Domain\User\Exception\UserNotFoundDomainException;
 use App\Domain\User\Repository\UserRepositoryInterface;
+use App\Domain\User\Service\UserAuthorizationService;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final readonly class UpdateUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
+        private UserAuthorizationService $userAuthorizationService,
+        private Security $security,
     ) {
     }
 
@@ -20,15 +25,19 @@ final readonly class UpdateUserCommandHandler implements CommandHandlerInterface
     {
         \assert($command instanceof UpdateUserCommand);
 
-        $user = $this->userRepository->findById($command->id);
-        if (!$user) {
-            throw UserNotFoundException::withId($command->id);
+        if (!$this->userAuthorizationService->canManageUsers(user: $this->security->getUser())) {
+            throw UserAccessDeniedDomainException::forUserManagement();
         }
 
-        $user->setEmail($command->email);
-        $user->setName($command->name);
-        $user->setRole($command->role);
+        $user = $this->userRepository->findById(id: $command->id);
+        if (!$user) {
+            throw UserNotFoundDomainException::withId(id: $command->id);
+        }
 
-        $this->userRepository->save($user);
+        $user->setEmail(email: $command->email);
+        $user->setName(name: $command->name);
+        $user->setRole(role: $command->role);
+
+        $this->userRepository->save(user: $user);
     }
 }

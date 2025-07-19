@@ -11,7 +11,7 @@ class ValidationErrorException extends \Exception
      */
     public function __construct(string $message, private array $errors = [], int $code = 400, ?\Throwable $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct(message: $message, code: $code, previous: $previous);
     }
 
     /**
@@ -37,6 +37,6 @@ class ValidationErrorException extends \Exception
      */
     public static function withErrors(array $errors): self
     {
-        return new self('Invalid data', $errors);
+        return new self(message: 'Invalid data', errors: $errors);
     }
 }

@@ -6,8 +6,8 @@ namespace App\Application\Command\Article\CreateArticle;
 
 use App\Application\Bus\Command\CommandInterface;
 use App\Application\Exception\ValidationErrorException;
+use App\Domain\Article\Validator\ArticleValidator;
 use App\Domain\User\Entity\User;
-use App\Domain\User\ValueObject\UserRole;
 
 class CreateArticleCommand implements CommandInterface
 {
@@ -40,19 +40,7 @@ class CreateArticleCommand implements CommandInterface
             throw new ValidationErrorException(message: 'Missing required fields: ' . implode(', ', $missingFields));
         }
 
-        $errors = [];
-
-        if (!\in_array($author->getRole(), [UserRole::AUTHOR, UserRole::ADMIN], strict: true)) {
-            throw new ValidationErrorException(message: 'Author has not permission to create article');
-        }
-
-        if (mb_strlen($data['title']) < 10 || mb_strlen($data['title']) > 255) {
-            $errors['title'] = 'Title must be between 2 and 255 characters long';
-        }
-
-        if (mb_strlen($data['content']) < 100) {
-            $errors['content'] = 'Content must be at least 100 characters long';
-        }
+        $errors = ArticleValidator::validate(title: $data['title'], content: $data['content']);
 
         if (!empty($errors)) {
             throw ValidationErrorException::withErrors(errors: $errors);

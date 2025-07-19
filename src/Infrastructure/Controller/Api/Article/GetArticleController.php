@@ -7,6 +7,7 @@ namespace App\Infrastructure\Controller\Api\Article;
 use App\Application\Bus\Query\QueryBusInterface;
 use App\Application\Query\Article\GetArticle\GetArticleQuery;
 use App\Application\Query\Article\GetArticle\GetArticleQueryResult;
+use App\Domain\Article\Exception\ArticleDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -29,6 +30,10 @@ class GetArticleController extends AbstractController
             }
 
             return new JsonResponse(data: $result->toArray());
+        } catch (ArticleDomainException $e) {
+            return new JsonResponse(data: [
+                'error' => $e->getMessage(),
+            ], status: $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse(data: [
                 'error' => 'Unexpected error',

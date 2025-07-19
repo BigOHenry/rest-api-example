@@ -6,6 +6,7 @@ namespace App\Application\Command\User\UpdateUser;
 
 use App\Application\Bus\Command\CommandInterface;
 use App\Application\Exception\ValidationErrorException;
+use App\Domain\User\Validator\UserValidator;
 use App\Domain\User\ValueObject\UserRole;
 
 final readonly class UpdateUserCommand implements CommandInterface
@@ -35,26 +36,17 @@ final readonly class UpdateUserCommand implements CommandInterface
         }
 
         if (!empty($missingFields)) {
-            throw new ValidationErrorException('Missing required fields: ' . implode(', ', $missingFields));
+            throw new ValidationErrorException(message: 'Missing required fields: ' . implode(', ', $missingFields));
         }
 
-        $errors = [];
-
-        if (!filter_var($data['email'], \FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Invalid email format';
-        }
-
-        if (mb_strlen(trim($data['name'])) < 2) {
-            $errors['name'] = 'Name must be at least 2 characters long';
-        }
-
-        $validRoles = array_column(UserRole::cases(), 'value');
-        if (!\in_array($data['role'], $validRoles, true)) {
-            $errors['role'] = 'Invalid role value. Must be one of: ' . implode(', ', $validRoles);
-        }
+        $errors = UserValidator::validateForUpdate(
+            email: $data['email'],
+            name: $data['name'],
+            role: $data['role'],
+        );
 
         if (!empty($errors)) {
-            throw ValidationErrorException::withErrors($errors);
+            throw ValidationErrorException::withErrors(errors: $errors);
         }
 
         return new self(

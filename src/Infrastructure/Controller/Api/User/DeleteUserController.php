@@ -6,7 +6,7 @@ namespace App\Infrastructure\Controller\Api\User;
 
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\User\DeleteUser\DeleteUserCommand;
-use App\Domain\User\Exception\UserNotFoundException;
+use App\Domain\User\Exception\UserNotFoundDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -26,7 +26,7 @@ class DeleteUserController extends AbstractController
             return new JsonResponse(data: [
                 'message' => 'User deleted successfully',
             ]);
-        } catch (UserNotFoundException) {
+        } catch (UserNotFoundDomainException) {
             return new JsonResponse(data: null, status: 204);
         } catch (\Exception $e) {
             return new JsonResponse(data: [

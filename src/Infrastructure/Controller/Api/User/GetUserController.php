@@ -7,6 +7,7 @@ namespace App\Infrastructure\Controller\Api\User;
 use App\Application\Bus\Query\QueryBusInterface;
 use App\Application\Query\User\GetUser\GetUserQuery;
 use App\Application\Query\User\GetUser\GetUserQueryResult;
+use App\Domain\User\Exception\UserDomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -29,6 +30,10 @@ class GetUserController extends AbstractController
             }
 
             return new JsonResponse(data: $result->toArray());
+        } catch (UserDomainException $e) {
+            return new JsonResponse(data: [
+                'error' => $e->getMessage(),
+            ], status: $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse(data: [
                 'error' => 'Unexpected error',

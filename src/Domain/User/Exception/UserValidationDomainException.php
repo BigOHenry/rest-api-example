@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Exception;
 
-class NotImplementedException extends \LogicException
+class UserValidationDomainException extends UserDomainException
 {
 }

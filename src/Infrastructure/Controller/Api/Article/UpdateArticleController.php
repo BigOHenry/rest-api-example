@@ -6,8 +6,8 @@ namespace App\Infrastructure\Controller\Api\Article;
 
 use App\Application\Bus\Command\CommandBusInterface;
 use App\Application\Command\Article\UpdateArticle\UpdateArticleCommand;
-use App\Application\Exception\HandleProcessErrorException;
 use App\Application\Exception\ValidationErrorException;
+use App\Domain\Article\Exception\ArticleDomainException;
 use App\Domain\User\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +32,7 @@ class UpdateArticleController extends AbstractController
                 ], status: 401);
             }
 
-            $command = UpdateArticleCommand::fromApiArray(articleId: $id, data: $data, author: $user);
+            $command = UpdateArticleCommand::fromApiArray(articleId: $id, data: $data);
             $this->commandBus->handle(command: $command);
 
             return new JsonResponse(data: [
@@ -43,14 +43,14 @@ class UpdateArticleController extends AbstractController
                 'error' => 'Invalid JSON format',
                 'message' => $e->getMessage(),
             ], status: 400);
-        } catch (HandleProcessErrorException $e) {
-            return new JsonResponse(data: [
-                'error' => $e->getMessage(),
-            ], status: $e->getCode());
         } catch (ValidationErrorException $e) {
             return new JsonResponse(data: [
                 'error' => $e->getMessage(),
                 'message' => $e->getErrors(),
+            ], status: $e->getCode());
+        } catch (ArticleDomainException $e) {
+            return new JsonResponse(data: [
+                'error' => $e->getMessage(),
             ], status: $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse(data: [

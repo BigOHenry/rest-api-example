@@ -35,7 +35,7 @@ class SymfonyCreationCommandBus implements CreationCommandBusInterface
             throw HandlerNotFoundException::forCommand(commandClass: $command::class);
         }
 
-        return $handler->handle($command);
+        return $handler->handle(command: $command);
     }
 
     /**

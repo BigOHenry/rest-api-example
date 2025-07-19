@@ -7,6 +7,7 @@ namespace App\Infrastructure\Controller\Api\Article;
 use App\Application\Bus\Command\CreationCommandBusInterface;
 use App\Application\Command\Article\CreateArticle\CreateArticleCommand;
 use App\Application\Exception\ValidationErrorException;
+use App\Domain\Article\Exception\ArticleDomainException;
 use App\Domain\User\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,6 +49,10 @@ class CreateArticleController extends AbstractController
                 'error' => $e->getMessage(),
                 'message' => $e->getErrors(),
             ], status: 400);
+        } catch (ArticleDomainException $e) {
+            return new JsonResponse(data: [
+                'error' => $e->getMessage(),
+            ], status: $e->getCode());
         } catch (\Exception $e) {
             return new JsonResponse(data: [
                 'error' => 'Article creation failed',

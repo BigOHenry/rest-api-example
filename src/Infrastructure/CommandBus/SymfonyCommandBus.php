@@ -35,7 +35,7 @@ class SymfonyCommandBus implements CommandBusInterface
             throw HandlerNotFoundException::forCommand(commandClass: $command::class);
         }
 
-        $handler->handle($command);
+        $handler->handle(command: $command);
     }
 
     /**

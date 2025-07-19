@@ -6,13 +6,18 @@ namespace App\Application\Command\User\DeleteUser;
 
 use App\Application\Bus\Command\CommandHandlerInterface;
 use App\Application\Bus\Command\CommandInterface;
-use App\Domain\User\Exception\UserNotFoundException;
+use App\Domain\User\Exception\UserAccessDeniedDomainException;
+use App\Domain\User\Exception\UserNotFoundDomainException;
 use App\Domain\User\Repository\UserRepositoryInterface;
+use App\Domain\User\Service\UserAuthorizationService;
+use Symfony\Bundle\SecurityBundle\Security;
 
 final readonly class DeleteUserCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
+        private UserAuthorizationService $userAuthorizationService,
+        private Security $security,
     ) {
     }
 
@@ -20,11 +25,15 @@ final readonly class DeleteUserCommandHandler implements CommandHandlerInterface
     {
         \assert($command instanceof DeleteUserCommand);
 
-        $user = $this->userRepository->findById($command->id);
-        if (!$user) {
-            throw UserNotFoundException::withId($command->id);
+        if (!$this->userAuthorizationService->canManageUsers(user: $this->security->getUser())) {
+            throw UserAccessDeniedDomainException::forUserManagement();
         }
 
-        $this->userRepository->remove($user);
+        $user = $this->userRepository->findById(id: $command->id);
+        if (!$user) {
+            throw UserNotFoundDomainException::withId(id: $command->id);
+        }
+
+        $this->userRepository->remove(user: $user);
     }
 }

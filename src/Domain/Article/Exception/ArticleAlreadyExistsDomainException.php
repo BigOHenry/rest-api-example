@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Article\Exception;
 
-class ArticleAlreadyExistsException extends ArticleException
+class ArticleAlreadyExistsDomainException extends ArticleDomainException
 {
     public static function withTitle(): self
     {

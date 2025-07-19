@@ -6,7 +6,7 @@ namespace App\Domain\User\ValueObject;
 
 enum UserRole: string
 {
-    case ADMIN = 'admin';
-    case AUTHOR = 'author';
-    case READER = 'reader';
+    case ADMIN = 'ROLE_ADMIN';
+    case AUTHOR = 'ROLE_AUTHOR';
+    case READER = 'ROLE_READER';
 }

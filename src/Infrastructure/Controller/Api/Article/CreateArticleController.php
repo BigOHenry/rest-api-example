@@ -52,7 +52,7 @@ class CreateArticleController extends AbstractController
         } catch (ArticleDomainException $e) {
             return new JsonResponse(data: [
                 'error' => $e->getMessage(),
-            ], status: $e->getCode());
+            ], status: $e->getCode() ?? 400);
         } catch (\Exception $e) {
             return new JsonResponse(data: [
                 'error' => 'Article creation failed',

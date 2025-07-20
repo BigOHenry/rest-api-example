@@ -113,7 +113,8 @@ class UpdateArticleCommandHandlerTest extends TestCase
         $article->expects($this->once())->method('setTitle')->with(title: 'Admin Updated Title');
         $article->expects($this->once())
                 ->method('setContent')
-                ->with(content: 'This is the test article content that should be at least 50 characters.');
+                ->with(content: 'This is the test article content that should be at least 50 characters.')
+        ;
         $this->articleRepository->expects($this->once())->method('save')->with(article: $article);
 
         $this->handler->handle($command);

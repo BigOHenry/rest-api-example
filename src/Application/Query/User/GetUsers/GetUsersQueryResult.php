@@ -7,7 +7,7 @@ namespace App\Application\Query\User\GetUsers;
 use App\Application\Bus\Query\QueryResultInterface;
 use App\Domain\User\Entity\User;
 
-readonly class GetUsersQueryResult implements QueryResultInterface
+final readonly class GetUsersQueryResult implements QueryResultInterface
 {
     /**
      * @param User[] $users

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Application\User\Query;
 
 use App\Application\Query\User\GetUsers\GetUsersQueryResult;
@@ -23,7 +25,7 @@ class GetUsersQueryResultTest extends TestCase
         $this->assertCount(2, $array);
         $this->assertIsArray($array);
 
-        $this->assertEquals([
+        $this->assertSame([
             [
                 'id' => 1,
                 'email' => 'user1@example.com',
@@ -35,7 +37,7 @@ class GetUsersQueryResultTest extends TestCase
                 'email' => 'user2@example.com',
                 'name' => 'User 2',
                 'role' => 'ROLE_AUTHOR',
-            ]
+            ],
         ], $array);
     }
 
@@ -46,7 +48,7 @@ class GetUsersQueryResultTest extends TestCase
         $array = $result->toArray();
         $this->assertCount(0, $array);
         $this->assertEmpty($array);
-        $this->assertEquals([], $array);
+        $this->assertSame([], $array);
     }
 
     public function testToArrayWithSingleUser(): void
@@ -59,18 +61,18 @@ class GetUsersQueryResultTest extends TestCase
         $array = $result->toArray();
 
         $this->assertCount(1, $array);
-        $this->assertEquals([
+        $this->assertSame([
             [
                 'id' => 123,
                 'email' => 'single@example.com',
                 'name' => 'Single User',
                 'role' => 'ROLE_AUTHOR',
-            ]
+            ],
         ], $array);
     }
 
     /**
-     * @dataProvider userRoleProvider
+     * @dataProvider provideToArrayWithDifferentUserRolesCases
      */
     public function testToArrayWithDifferentUserRoles(UserRole $role, string $expectedRoleString): void
     {
@@ -80,10 +82,10 @@ class GetUsersQueryResultTest extends TestCase
 
         $array = $result->toArray();
 
-        $this->assertEquals($expectedRoleString, $array[0]['role']);
+        $this->assertSame($expectedRoleString, $array[0]['role']);
     }
 
-    public static function userRoleProvider(): array
+    public static function provideToArrayWithDifferentUserRolesCases(): iterable
     {
         return [
             'Reader role' => [UserRole::READER, 'ROLE_READER'],
@@ -158,7 +160,7 @@ class GetUsersQueryResultTest extends TestCase
 
     /**
      * Auxiliary method for setting ID via reflection
-     * (because setId is protected in the User entity)
+     * (because setId is protected in the User entity).
      */
     private function setUserId(User $user, int $id): void
     {

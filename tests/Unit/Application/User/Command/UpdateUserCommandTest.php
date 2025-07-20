@@ -17,15 +17,15 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => 'updated@example.com',
             'name' => 'Updated Reader',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $command = UpdateUserCommand::fromApiArray($userId, $data);
 
-        $this->assertEquals(123, $command->id);
-        $this->assertEquals('updated@example.com', $command->email);
-        $this->assertEquals('Updated Reader', $command->name);
-        $this->assertEquals(UserRole::READER, $command->role);
+        $this->assertSame(123, $command->id);
+        $this->assertSame('updated@example.com', $command->email);
+        $this->assertSame('Updated Reader', $command->name);
+        $this->assertSame(UserRole::READER, $command->role);
     }
 
     public function testFromApiArrayWithValidAuthorData(): void
@@ -34,14 +34,14 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => 'updatedauthor@example.com',
             'name' => 'Updated Author',
-            'role' => 'ROLE_AUTHOR'
+            'role' => 'ROLE_AUTHOR',
         ];
 
         $command = UpdateUserCommand::fromApiArray($userId, $data);
 
-        $this->assertEquals(456, $command->id);
-        $this->assertEquals('updatedauthor@example.com', $command->email);
-        $this->assertEquals('ROLE_AUTHOR', $command->role->value);
+        $this->assertSame(456, $command->id);
+        $this->assertSame('updatedauthor@example.com', $command->email);
+        $this->assertSame('ROLE_AUTHOR', $command->role->value);
     }
 
     public function testFromApiArrayWithValidAdminData(): void
@@ -50,13 +50,13 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => 'updatedadmin@example.com',
             'name' => 'Updated Admin',
-            'role' => 'ROLE_ADMIN'
+            'role' => 'ROLE_ADMIN',
         ];
 
         $command = UpdateUserCommand::fromApiArray($userId, $data);
 
-        $this->assertEquals(789, $command->id);
-        $this->assertEquals(UserRole::ADMIN, $command->role);
+        $this->assertSame(789, $command->id);
+        $this->assertSame(UserRole::ADMIN, $command->role);
     }
 
     public function testFromApiArrayTrimsWhitespace(): void
@@ -65,19 +65,19 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => '  trimmed@example.com  ',
             'name' => '  Trimmed User  ',
-            'role' => '  ROLE_READER  '
+            'role' => '  ROLE_READER  ',
         ];
 
         $command = UpdateUserCommand::fromApiArray($userId, $data);
 
-        $this->assertEquals(999, $command->id);
-        $this->assertEquals('trimmed@example.com', $command->email);
-        $this->assertEquals('Trimmed User', $command->name);
-        $this->assertEquals(UserRole::READER, $command->role);
+        $this->assertSame(999, $command->id);
+        $this->assertSame('trimmed@example.com', $command->email);
+        $this->assertSame('Trimmed User', $command->name);
+        $this->assertSame(UserRole::READER, $command->role);
     }
 
     /**
-     * @dataProvider missingFieldsProvider
+     * @dataProvider provideFromApiArrayFailsWithMissingFieldsCases
      */
     public function testFromApiArrayFailsWithMissingFields(array $data, string $expectedMessage): void
     {
@@ -87,28 +87,28 @@ class UpdateUserCommandTest extends TestCase
         UpdateUserCommand::fromApiArray(123, $data);
     }
 
-    public static function missingFieldsProvider(): array
+    public static function provideFromApiArrayFailsWithMissingFieldsCases(): iterable
     {
         return [
             'missing email' => [
                 ['name' => 'User', 'role' => 'ROLE_READER'],
-                'Missing required fields: email'
+                'Missing required fields: email',
             ],
             'missing name' => [
                 ['email' => 'test@example.com', 'role' => 'ROLE_READER'],
-                'Missing required fields: name'
+                'Missing required fields: name',
             ],
             'missing role' => [
                 ['email' => 'test@example.com', 'name' => 'User'],
-                'Missing required fields: role'
+                'Missing required fields: role',
             ],
             'missing multiple fields' => [
                 ['email' => 'test@example.com'],
-                'Missing required fields: name, role'
+                'Missing required fields: name, role',
             ],
             'all fields missing' => [
                 [],
-                'Missing required fields: email, name, role'
+                'Missing required fields: email, name, role',
             ],
         ];
     }
@@ -118,7 +118,7 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => 'invalid-email-format',
             'name' => 'Valid Name',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -131,7 +131,7 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => 'test@example.com',
             'name' => 'Valid Name',
-            'role' => 'INVALID_ROLE'
+            'role' => 'INVALID_ROLE',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -144,7 +144,7 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => '',
             'name' => 'Valid Name',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -158,7 +158,7 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => '   ',
             'name' => 'Valid Name',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -168,7 +168,7 @@ class UpdateUserCommandTest extends TestCase
     }
 
     /**
-     * @dataProvider validRoleProvider
+     * @dataProvider provideFromApiArrayWithDifferentValidRolesCases
      */
     public function testFromApiArrayWithDifferentValidRoles(string $roleString, UserRole $expectedRole): void
     {
@@ -176,17 +176,17 @@ class UpdateUserCommandTest extends TestCase
         $data = [
             'email' => 'test@example.com',
             'name' => 'Test User',
-            'role' => $roleString
+            'role' => $roleString,
         ];
 
         // Act
         $command = UpdateUserCommand::fromApiArray(123, $data);
 
         // Assert
-        $this->assertEquals($expectedRole, $command->role);
+        $this->assertSame($expectedRole, $command->role);
     }
 
-    public static function validRoleProvider(): array
+    public static function provideFromApiArrayWithDifferentValidRolesCases(): iterable
     {
         return [
             'Reader role' => ['ROLE_READER', UserRole::READER],

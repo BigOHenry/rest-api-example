@@ -12,7 +12,7 @@ use App\Domain\Article\Repository\ArticleRepositoryInterface;
 use App\Domain\Article\Service\ArticleAuthorizationService;
 use Symfony\Bundle\SecurityBundle\Security;
 
-readonly class DeleteArticleCommandHandler implements CommandHandlerInterface
+final readonly class DeleteArticleCommandHandler implements CommandHandlerInterface
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,

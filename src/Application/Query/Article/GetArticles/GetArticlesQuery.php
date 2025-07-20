@@ -6,6 +6,6 @@ namespace App\Application\Query\Article\GetArticles;
 
 use App\Application\Bus\Query\QueryInterface;
 
-class GetArticlesQuery implements QueryInterface
+final readonly class GetArticlesQuery implements QueryInterface
 {
 }

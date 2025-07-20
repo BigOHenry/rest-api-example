@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Tests\Unit\Application\User\Command;
+declare(strict_types=1);
 
+namespace App\Tests\Unit\Application\User\Command;
 
 use App\Application\Command\User\CreateUser\CreateUserCommand;
 use App\Application\Command\User\CreateUser\CreateUserCommandHandler;
 use App\Domain\User\Entity\User;
-use App\Domain\User\Exception\UserAlreadyExistsDomainException;
 use App\Domain\User\Exception\UserAccessDeniedDomainException;
+use App\Domain\User\Exception\UserAlreadyExistsDomainException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Service\PasswordHashingServiceInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use App\Domain\User\ValueObject\UserRole;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class CreateUserCommandHandlerTest extends TestCase
@@ -26,7 +27,6 @@ class CreateUserCommandHandlerTest extends TestCase
     private CreateUserCommandHandler $handler;
 
     /**
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -45,7 +45,6 @@ class CreateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulUserCreationByAdmin(): void
@@ -55,30 +54,34 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'created@example.com',
             'password' => 'CreatedPass123!',
             'name' => 'Created User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($adminUser);
+            ->willReturn($adminUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with($adminUser)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->userRepository
             ->expects($this->once())
             ->method('findByEmail')
             ->with('created@example.com')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->passwordHashingService
             ->expects($this->once())
             ->method('hashPassword')
-            ->willReturn('hashed_created_password');
+            ->willReturn('hashed_created_password')
+        ;
 
         $this->userRepository
             ->expects($this->once())
@@ -88,17 +91,17 @@ class CreateUserCommandHandlerTest extends TestCase
                     && $user->getName() === 'Created User'
                     && $user->getRole() === UserRole::READER
                     && $user->getPassword() === 'hashed_created_password';
-            }));
+            }))
+        ;
 
         $this->mockUserIdAfterSave(456);
 
         $result = $this->handler->handle($command);
 
-        $this->assertEquals(456, $result);
+        $this->assertSame(456, $result);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulAuthorCreationByAdmin(): void
@@ -108,7 +111,7 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'newauthor@example.com',
             'password' => 'AuthorPass123!',
             'name' => 'New Author',
-            'role' => 'ROLE_AUTHOR'
+            'role' => 'ROLE_AUTHOR',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -120,11 +123,10 @@ class CreateUserCommandHandlerTest extends TestCase
 
         $result = $this->handler->handle($command);
 
-        $this->assertEquals(789, $result);
+        $this->assertSame(789, $result);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulAdminCreationByAdmin(): void
@@ -134,7 +136,7 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'newadmin@example.com',
             'password' => 'NewAdminPass123!',
             'name' => 'New Admin',
-            'role' => 'ROLE_ADMIN'
+            'role' => 'ROLE_ADMIN',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -146,11 +148,10 @@ class CreateUserCommandHandlerTest extends TestCase
 
         $result = $this->handler->handle($command);
 
-        $this->assertEquals(1, $result);
+        $this->assertSame(1, $result);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserLacksManageUsersPermission(): void
@@ -160,19 +161,21 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'unauthorized@example.com',
             'password' => 'UnauthorizedPass123!',
             'name' => 'Unauthorized User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($readerUser);
+            ->willReturn($readerUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with($readerUser)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->userRepository->expects($this->never())->method('findByEmail');
         $this->userRepository->expects($this->never())->method('save');
@@ -189,19 +192,21 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'anonymous@example.com',
             'password' => 'AnonymousPass123!',
             'name' => 'Anonymous User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with(null)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->userRepository->expects($this->never())->method('findByEmail');
         $this->userRepository->expects($this->never())->method('save');
@@ -213,7 +218,6 @@ class CreateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserWithEmailAlreadyExists(): void
@@ -224,7 +228,7 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'existing@example.com',
             'password' => 'ExistingPass123!',
             'name' => 'Existing User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -234,7 +238,8 @@ class CreateUserCommandHandlerTest extends TestCase
             ->expects($this->once())
             ->method('findByEmail')
             ->with('existing@example.com')
-            ->willReturn($existingUser);
+            ->willReturn($existingUser)
+        ;
 
         $this->userRepository->expects($this->never())->method('save');
         $this->passwordHashingService->expects($this->never())->method('hashPassword');
@@ -245,7 +250,6 @@ class CreateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandlePasswordIsHashedCorrectly(): void
@@ -258,7 +262,7 @@ class CreateUserCommandHandlerTest extends TestCase
             'email' => 'hash@example.com',
             'password' => $plainPassword,
             'name' => 'Hash User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -275,14 +279,16 @@ class CreateUserCommandHandlerTest extends TestCase
                 }),
                 $this->equalTo($plainPassword)
             )
-            ->willReturn($hashedPassword);
+            ->willReturn($hashedPassword)
+        ;
 
         $this->userRepository
             ->expects($this->once())
             ->method('save')
             ->with($this->callback(function (User $user) use ($hashedPassword) {
                 return $user->getPassword() === $hashedPassword;
-            }));
+            }))
+        ;
 
         $this->mockUserIdAfterSave(999);
 
@@ -290,17 +296,18 @@ class CreateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider roleTestProvider
+     * @dataProvider provideHandleWithDifferentRolesByAuthorizedUserCases
+     *
      * @throws Exception
      */
     public function testHandleWithDifferentRolesByAuthorizedUser(UserRole $role): void
     {
         $adminUser = $this->createMock(User::class);
         $command = CreateUserCommand::fromApiArray([
-            'email' => "user@example.com",
+            'email' => 'user@example.com',
             'password' => 'Password123!',
             'name' => 'Test User',
-            'role' => $role->value
+            'role' => $role->value,
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -312,10 +319,10 @@ class CreateUserCommandHandlerTest extends TestCase
 
         $result = $this->handler->handle($command);
 
-        $this->assertEquals(1, $result);
+        $this->assertSame(1, $result);
     }
 
-    public static function roleTestProvider(): array
+    public static function provideHandleWithDifferentRolesByAuthorizedUserCases(): iterable
     {
         return [
             'Reader role' => [UserRole::READER],
@@ -328,7 +335,7 @@ class CreateUserCommandHandlerTest extends TestCase
     {
         $this->userRepository
             ->method('save')
-            ->willReturnCallback(function (User $user) use ($userId) {
+            ->willReturnCallback(function (User $user) use ($userId): void {
                 $reflection = new \ReflectionClass($user);
                 $idProperty = $reflection->getProperty('id');
                 $idProperty->setAccessible(true);

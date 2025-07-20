@@ -7,7 +7,7 @@ namespace App\Application\Query\Article\GetArticle;
 use App\Application\Bus\Query\QueryResultInterface;
 use App\Domain\Article\Entity\Article;
 
-readonly class GetArticleQueryResult implements QueryResultInterface
+final readonly class GetArticleQueryResult implements QueryResultInterface
 {
     public function __construct(
         private ?Article $article,

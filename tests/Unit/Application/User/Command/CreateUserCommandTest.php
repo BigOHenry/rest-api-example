@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Unit\Application\User\Command;
 
 use App\Application\Command\User\CreateUser\CreateUserCommand;
@@ -15,15 +17,15 @@ class CreateUserCommandTest extends TestCase
             'email' => 'newreader@example.com',
             'password' => 'CreatePass123!',
             'name' => 'New Reader',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $command = CreateUserCommand::fromApiArray($data);
 
-        $this->assertEquals('newreader@example.com', $command->email);
-        $this->assertEquals('CreatePass123!', $command->password);
-        $this->assertEquals('New Reader', $command->name);
-        $this->assertEquals(UserRole::READER, $command->role);
+        $this->assertSame('newreader@example.com', $command->email);
+        $this->assertSame('CreatePass123!', $command->password);
+        $this->assertSame('New Reader', $command->name);
+        $this->assertSame(UserRole::READER, $command->role);
     }
 
     public function testFromApiArrayWithValidAuthorData(): void
@@ -32,13 +34,13 @@ class CreateUserCommandTest extends TestCase
             'email' => 'newauthor@example.com',
             'password' => 'AuthorCreate123!',
             'name' => 'New Author',
-            'role' => 'ROLE_AUTHOR'
+            'role' => 'ROLE_AUTHOR',
         ];
 
         $command = CreateUserCommand::fromApiArray($data);
 
-        $this->assertEquals('newauthor@example.com', $command->email);
-        $this->assertEquals('ROLE_AUTHOR', $command->role->value);
+        $this->assertSame('newauthor@example.com', $command->email);
+        $this->assertSame('ROLE_AUTHOR', $command->role->value);
     }
 
     public function testFromApiArrayWithValidAdminData(): void
@@ -47,12 +49,12 @@ class CreateUserCommandTest extends TestCase
             'email' => 'newadmin@example.com',
             'password' => 'AdminCreate123!',
             'name' => 'New Admin',
-            'role' => 'ROLE_ADMIN'
+            'role' => 'ROLE_ADMIN',
         ];
 
         $command = CreateUserCommand::fromApiArray($data);
 
-        $this->assertEquals(UserRole::ADMIN, $command->role);
+        $this->assertSame(UserRole::ADMIN, $command->role);
     }
 
     public function testFromApiArrayTrimsWhitespace(): void
@@ -61,19 +63,19 @@ class CreateUserCommandTest extends TestCase
             'email' => '  create@example.com  ',
             'password' => '  CreatePass123!  ',
             'name' => '  Create User  ',
-            'role' => '  ROLE_READER  '
+            'role' => '  ROLE_READER  ',
         ];
 
         $command = CreateUserCommand::fromApiArray($data);
 
-        $this->assertEquals('create@example.com', $command->email);
-        $this->assertEquals('CreatePass123!', $command->password);
-        $this->assertEquals('Create User', $command->name);
-        $this->assertEquals(UserRole::READER, $command->role);
+        $this->assertSame('create@example.com', $command->email);
+        $this->assertSame('CreatePass123!', $command->password);
+        $this->assertSame('Create User', $command->name);
+        $this->assertSame(UserRole::READER, $command->role);
     }
 
     /**
-     * @dataProvider missingFieldsProvider
+     * @dataProvider provideFromApiArrayFailsWithMissingFieldsCases
      */
     public function testFromApiArrayFailsWithMissingFields(array $data, string $expectedMessage): void
     {
@@ -83,28 +85,28 @@ class CreateUserCommandTest extends TestCase
         CreateUserCommand::fromApiArray($data);
     }
 
-    public static function missingFieldsProvider(): array
+    public static function provideFromApiArrayFailsWithMissingFieldsCases(): iterable
     {
         return [
             'missing email' => [
                 ['password' => 'Pass123!', 'name' => 'User', 'role' => 'ROLE_READER'],
-                'Missing required fields: email'
+                'Missing required fields: email',
             ],
             'missing password' => [
                 ['email' => 'test@example.com', 'name' => 'User', 'role' => 'ROLE_READER'],
-                'Missing required fields: password'
+                'Missing required fields: password',
             ],
             'missing name' => [
                 ['email' => 'test@example.com', 'password' => 'Pass123!', 'role' => 'ROLE_READER'],
-                'Missing required fields: name'
+                'Missing required fields: name',
             ],
             'missing role' => [
                 ['email' => 'test@example.com', 'password' => 'Pass123!', 'name' => 'User'],
-                'Missing required fields: role'
+                'Missing required fields: role',
             ],
             'multiple missing fields' => [
                 ['name' => 'User Only'],
-                'Missing required fields: email, password, role'
+                'Missing required fields: email, password, role',
             ],
         ];
     }
@@ -115,7 +117,7 @@ class CreateUserCommandTest extends TestCase
             'email' => 'invalid-email-format',
             'password' => 'ValidPass123!',
             'name' => 'Valid Name',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -129,7 +131,7 @@ class CreateUserCommandTest extends TestCase
             'email' => 'test@example.com',
             'password' => 'weak',
             'name' => 'Valid Name',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -143,7 +145,7 @@ class CreateUserCommandTest extends TestCase
             'email' => 'test@example.com',
             'password' => 'ValidPass123!',
             'name' => 'Valid Name',
-            'role' => 'INVALID_ROLE'
+            'role' => 'INVALID_ROLE',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);
@@ -157,7 +159,7 @@ class CreateUserCommandTest extends TestCase
             'email' => '',
             'password' => 'ValidPass123!',
             'name' => 'Valid Name',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ];
 
         $this->expectException(UserValidationDomainDomainException::class);

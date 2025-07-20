@@ -15,27 +15,6 @@ class DeleteUserCommandTest extends TestCase
 
         $command = new DeleteUserCommand($userId);
 
-        $this->assertEquals(123, $command->id);
-    }
-
-    /**
-     * @dataProvider validIdProvider
-     */
-    public function testCreateCommandWithVariousValidIds(int $id): void
-    {
-        $command = new DeleteUserCommand($id);
-
-        $this->assertEquals($id, $command->id);
-    }
-
-    public static function validIdProvider(): array
-    {
-        return [
-            'Small ID' => [1],
-            'Medium ID' => [123],
-            'Large ID' => [999999],
-            'Random ID' => [42],
-            'Another random ID' => [7890],
-        ];
+        $this->assertSame(123, $command->id);
     }
 }

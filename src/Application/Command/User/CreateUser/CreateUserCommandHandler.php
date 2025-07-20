@@ -14,7 +14,7 @@ use App\Domain\User\Service\PasswordHashingServiceInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use Symfony\Bundle\SecurityBundle\Security;
 
-readonly class CreateUserCommandHandler implements CreationCommandHandlerInterface
+final readonly class CreateUserCommandHandler implements CreationCommandHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,

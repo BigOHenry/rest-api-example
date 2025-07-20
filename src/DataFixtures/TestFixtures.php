@@ -14,13 +14,13 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class TestFixtures extends Fixture
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher,
+        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
     public function load(ObjectManager $manager): void
     {
-        // Vytvoří testovací uživatele s různými rolemi
+        // Creates test users with different roles
         $users = [
             [
                 'email' => 'admin@test.com',
@@ -45,13 +45,12 @@ class TestFixtures extends Fixture
         foreach ($users as $userData) {
             $user = User::create(
                 $userData['email'],
-                'Password1234.', // Bude se hashovat
+                'tmp',
                 $userData['name'],
                 $userData['role']
             );
 
-            // Hash hesla (pokud vaše entita to vyžaduje)
-            $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+            $hashedPassword = $this->passwordHasher->hashPassword($user, 'Password1234.');
             $user->setPassword($hashedPassword);
 
             $manager->persist($user);
@@ -60,7 +59,7 @@ class TestFixtures extends Fixture
 
         $manager->flush();
 
-        // Vytvoří testovací články
+        // Creates test articles
         $articles = [
             [
                 'title' => 'Test Article 1 - Security Testing',
@@ -85,7 +84,6 @@ class TestFixtures extends Fixture
         foreach ($articles as $articleData) {
             $author = $this->getReference($articleData['author'], User::class);
 
-            // Předpokládám že máte Article entitu
             $article = Article::create(
                 $articleData['title'],
                 $articleData['content'],
@@ -98,7 +96,7 @@ class TestFixtures extends Fixture
         $manager->flush();
 
         echo "✅ Test fixtures loaded successfully:\n";
-        echo "  - 4 test users with different roles\n";
+        echo "  - 3 test users with different roles\n";
         echo "  - 3 test articles with different authors\n";
     }
 }

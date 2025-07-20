@@ -32,6 +32,8 @@ final readonly class UpdateUserCommand implements CommandInterface
         foreach ($requiredFields as $field) {
             if (!isset($data[$field]) || empty(trim($data[$field]))) {
                 $missingFields[] = $field;
+            } else {
+                $data[$field] = trim($data[$field]);
             }
         }
 

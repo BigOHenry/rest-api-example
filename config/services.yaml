@@ -28,8 +28,6 @@ services:
         resource: '../src/Infrastructure/Controller/Api/'
         tags: ['controller.service_arguments']
 
-    App\Infrastructure\ApiPlatform\OpenApiFactoryDecorator:
-
     # Command Bus
     App\Infrastructure\CommandBus\SymfonyCommandBus:
         arguments:
@@ -38,7 +36,6 @@ services:
     App\Application\Bus\Command\CommandBusInterface:
         alias: App\Infrastructure\CommandBus\SymfonyCommandBus
 
-    # Command Bus
     App\Infrastructure\CommandBus\SymfonyCreationCommandBus:
         arguments:
             - !tagged_iterator command.handler

@@ -39,6 +39,7 @@ security:
         - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/doc, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: ROLE_ADMIN }
         - { path: ^/api/articles, roles: [ ROLE_AUTHOR, ROLE_ADMIN ], methods: [ POST ] }
         - { path: ^/api/articles/\d+, roles: [ ROLE_AUTHOR, ROLE_ADMIN ], methods: [ PUT, DELETE ] }

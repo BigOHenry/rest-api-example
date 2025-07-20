@@ -284,6 +284,7 @@ class CreateArticleCommandHandlerTest extends TestCase
                 $idProperty = $reflection->getProperty('id');
                 $idProperty->setAccessible(true);
                 $idProperty->setValue($article, $articleId);
-            });
+            })
+        ;
     }
 }

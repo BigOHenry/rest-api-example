@@ -36,7 +36,7 @@ class ArticleValidator
     public static function validateContent(string $content): array
     {
         $errors = [];
-        if (mb_strlen($content) < 50) {
+        if (mb_strlen(trim($content)) < 50) {
             $errors['content'] = 'Content must be at least 50 characters long';
         }
 

@@ -44,8 +44,8 @@ class RegisterController extends BaseController
                         property: 'password',
                         description: 'User password (minimum 6 characters)',
                         type: 'string',
-                        minLength: 6,
-                        example: 'securePassword123'
+                        minLength: 8,
+                        example: 'Password1234.'
                     ),
                     'name' => new OA\Property(
                         property: 'name',

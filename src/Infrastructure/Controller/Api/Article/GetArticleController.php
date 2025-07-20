@@ -68,7 +68,7 @@ class GetArticleController extends BaseController
                                     example: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
                                 ),
                                 'author' => new OA\Property(
-                                    property: 'role',
+                                    property: 'author',
                                     type: 'string',
                                     example: 'John Doe'
                                 ),

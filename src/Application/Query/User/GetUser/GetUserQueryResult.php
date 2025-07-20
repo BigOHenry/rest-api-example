@@ -7,7 +7,7 @@ namespace App\Application\Query\User\GetUser;
 use App\Application\Bus\Query\QueryResultInterface;
 use App\Domain\User\Entity\User;
 
-readonly class GetUserQueryResult implements QueryResultInterface
+final readonly class GetUserQueryResult implements QueryResultInterface
 {
     public function __construct(
         private ?User $user,

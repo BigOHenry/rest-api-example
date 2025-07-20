@@ -12,7 +12,7 @@ use App\Domain\Article\Exception\ArticleAlreadyExistsDomainException;
 use App\Domain\Article\Repository\ArticleRepositoryInterface;
 use App\Domain\Article\Service\ArticleAuthorizationService;
 
-readonly class CreateArticleCommandHandler implements CreationCommandHandlerInterface
+final readonly class CreateArticleCommandHandler implements CreationCommandHandlerInterface
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,

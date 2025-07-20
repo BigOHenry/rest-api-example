@@ -8,7 +8,7 @@ use App\Application\Bus\Query\QueryHandlerInterface;
 use App\Application\Bus\Query\QueryInterface;
 use App\Domain\Article\Repository\ArticleRepositoryInterface;
 
-readonly class GetArticlesQueryHandler implements QueryHandlerInterface
+final readonly class GetArticlesQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
         private ArticleRepositoryInterface $articleRepository,

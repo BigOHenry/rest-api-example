@@ -9,7 +9,7 @@ use App\Domain\Article\Exception\ArticleValidationDomainDomainException;
 use App\Domain\Article\Validator\ArticleValidator;
 use App\Domain\User\Entity\User;
 
-class CreateArticleCommand implements CommandInterface
+final readonly class CreateArticleCommand implements CommandInterface
 {
     protected function __construct(
         public string $title,

@@ -13,8 +13,8 @@ use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use App\Domain\User\ValueObject\UserRole;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class GetUsersQueryHandlerTest extends TestCase
@@ -25,7 +25,6 @@ class GetUsersQueryHandlerTest extends TestCase
     private GetUsersQueryHandler $handler;
 
     /**
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -42,7 +41,6 @@ class GetUsersQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulUsersRetrievalByAuthorizedUser(): void
@@ -52,25 +50,28 @@ class GetUsersQueryHandlerTest extends TestCase
         $users = [
             User::create('reader@example.com', 'pass', 'Reader User'),
             User::create('author@example.com', 'pass', 'Author User', UserRole::AUTHOR),
-            User::create('admin@example.com', 'pass', 'Admin User', UserRole::ADMIN)
+            User::create('admin@example.com', 'pass', 'Admin User', UserRole::ADMIN),
         ];
         $query = new GetUsersQuery();
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($authorizedUser);
+            ->willReturn($authorizedUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canReadUsers')
             ->with(user: $authorizedUser)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->userRepository
             ->expects($this->once())
             ->method('findAll')
-            ->willReturn($users);
+            ->willReturn($users)
+        ;
 
         $result = $this->handler->handle($query);
 
@@ -78,7 +79,6 @@ class GetUsersQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulEmptyUsersRetrieval(): void
@@ -91,7 +91,8 @@ class GetUsersQueryHandlerTest extends TestCase
         $this->userRepository
             ->expects($this->once())
             ->method('findAll')
-            ->willReturn([]);
+            ->willReturn([])
+        ;
 
         $result = $this->handler->handle($query);
 
@@ -99,7 +100,6 @@ class GetUsersQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserLacksReadUsersPermission(): void
@@ -110,13 +110,15 @@ class GetUsersQueryHandlerTest extends TestCase
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($unauthorizedUser);
+            ->willReturn($unauthorizedUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canReadUsers')
             ->with(user: $unauthorizedUser)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         // Repositories must not be called when unauthorized
         $this->userRepository->expects($this->never())->method('findAll');
@@ -133,13 +135,15 @@ class GetUsersQueryHandlerTest extends TestCase
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canReadUsers')
             ->with(user: null)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->userRepository->expects($this->never())->method('findAll');
 
@@ -149,7 +153,6 @@ class GetUsersQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleCallsRepositoryAfterAuthorization(): void
@@ -164,12 +167,14 @@ class GetUsersQueryHandlerTest extends TestCase
             ->expects($this->once())
             ->method('canReadUsers')
             ->with(user: $authorizedUser)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->userRepository
             ->expects($this->once())
             ->method('findAll')
-            ->willReturn($users);
+            ->willReturn($users)
+        ;
 
         $result = $this->handler->handle($query);
 
@@ -177,7 +182,6 @@ class GetUsersQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleDoesNotCallRepositoryWhenAuthorizationFails(): void
@@ -192,7 +196,8 @@ class GetUsersQueryHandlerTest extends TestCase
         // Critical check: findAll MUST NOT be called on authorization failure
         $this->userRepository
             ->expects($this->never())
-            ->method('findAll');
+            ->method('findAll')
+        ;
 
         $this->expectException(UserAccessDeniedDomainException::class);
 

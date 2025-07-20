@@ -12,8 +12,8 @@ use App\Domain\User\Exception\UserNotFoundDomainException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class DeleteUserCommandHandlerTest extends TestCase
@@ -24,7 +24,6 @@ class DeleteUserCommandHandlerTest extends TestCase
     private DeleteUserCommandHandler $handler;
 
     /**
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -41,7 +40,6 @@ class DeleteUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulUserDeletionByAdmin(): void
@@ -54,32 +52,35 @@ class DeleteUserCommandHandlerTest extends TestCase
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($adminUser);
+            ->willReturn($adminUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with($adminUser)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // A user with this ID exists
         $this->userRepository
             ->expects($this->once())
             ->method('findById')
             ->with(123)
-            ->willReturn($userToDelete);
+            ->willReturn($userToDelete)
+        ;
 
         // User is deleted
         $this->userRepository
             ->expects($this->once())
             ->method('remove')
-            ->with($userToDelete);
+            ->with($userToDelete)
+        ;
 
         $this->handler->handle($command);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulDeletionOfReaderByAdmin(): void
@@ -97,7 +98,6 @@ class DeleteUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserLacksManageUsersPermission(): void
@@ -109,13 +109,15 @@ class DeleteUserCommandHandlerTest extends TestCase
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($readerUser);
+            ->willReturn($readerUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with($readerUser)
-            ->willReturn(false); // READER does not have permission
+            ->willReturn(false) // READER does not have permission
+        ;
 
         // No other methods should be called after no permissions
         $this->userRepository->expects($this->never())->method('findById');
@@ -133,13 +135,15 @@ class DeleteUserCommandHandlerTest extends TestCase
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with(null)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->userRepository->expects($this->never())->method('findById');
         $this->userRepository->expects($this->never())->method('remove');
@@ -150,7 +154,6 @@ class DeleteUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserNotFound(): void
@@ -165,7 +168,8 @@ class DeleteUserCommandHandlerTest extends TestCase
             ->expects($this->once())
             ->method('findById')
             ->with(999)
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->userRepository->expects($this->never())->method('remove');
 
@@ -175,7 +179,6 @@ class DeleteUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleCallsRepositoryMethodsInCorrectOrder(): void
@@ -192,18 +195,19 @@ class DeleteUserCommandHandlerTest extends TestCase
             ->expects($this->once())
             ->method('findById')
             ->with(123)
-            ->willReturn($userToDelete);
+            ->willReturn($userToDelete)
+        ;
 
         $this->userRepository
             ->expects($this->once())
             ->method('remove')
-            ->with($userToDelete);
+            ->with($userToDelete)
+        ;
 
         $this->handler->handle($command);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleDoesNotCallRemoveWhenAuthorizationFails(): void
@@ -217,7 +221,8 @@ class DeleteUserCommandHandlerTest extends TestCase
         // Critical check: remove MUST NOT be called on permission check
         $this->userRepository
             ->expects($this->never())
-            ->method('remove');
+            ->method('remove')
+        ;
 
         $this->expectException(UserAccessDeniedDomainException::class);
 

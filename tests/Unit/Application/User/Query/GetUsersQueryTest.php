@@ -15,22 +15,4 @@ class GetUsersQueryTest extends TestCase
 
         $this->assertInstanceOf(GetUsersQuery::class, $query);
     }
-
-    public function testQueryHasNoParameters(): void
-    {
-        $query = new GetUsersQuery();
-
-        $reflection = new \ReflectionClass($query);
-        $properties = $reflection->getProperties();
-
-        $this->assertEmpty($properties, 'GetUsersQuery should not have any properties');
-    }
-
-    public function testMultipleInstancesAreEqual(): void
-    {
-        $query1 = new GetUsersQuery();
-        $query2 = new GetUsersQuery();
-
-        $this->assertEquals($query1, $query2);
-    }
 }

@@ -92,7 +92,7 @@ class CreateArticleController extends BaseController
                             items: new OA\Items(type: 'string'),
                             example: [
                                 'title' => 'Title must be between 10 and 255 characters long',
-                                'content' => 'Content must be at least 100 characters long'
+                                'content' => 'Content must be at least 100 characters long',
                             ]
                         ),
                     ],

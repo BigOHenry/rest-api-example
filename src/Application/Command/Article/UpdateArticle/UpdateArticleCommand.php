@@ -8,7 +8,7 @@ use App\Application\Bus\Command\CommandInterface;
 use App\Domain\Article\Exception\ArticleValidationDomainDomainException;
 use App\Domain\Article\Validator\ArticleValidator;
 
-class UpdateArticleCommand implements CommandInterface
+final readonly class UpdateArticleCommand implements CommandInterface
 {
     protected function __construct(
         public int $id,

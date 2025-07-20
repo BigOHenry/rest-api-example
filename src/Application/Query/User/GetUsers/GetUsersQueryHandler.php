@@ -11,7 +11,7 @@ use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use Symfony\Bundle\SecurityBundle\Security;
 
-readonly class GetUsersQueryHandler implements QueryHandlerInterface
+final readonly class GetUsersQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,

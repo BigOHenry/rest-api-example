@@ -12,8 +12,8 @@ use App\Domain\User\Exception\UserAccessDeniedDomainException;
 use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class GetUserQueryHandlerTest extends TestCase
@@ -24,7 +24,6 @@ class GetUserQueryHandlerTest extends TestCase
     private GetUserQueryHandler $handler;
 
     /**
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -41,12 +40,11 @@ class GetUserQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulUserRetrieval(): void
     {
-       $adminUser = $this->createMock(User::class);
+        $adminUser = $this->createMock(User::class);
         $requestedUser = User::create('user@example.com', 'pass', 'Test User');
         $query = new GetUserQuery(123);
 
@@ -62,13 +60,12 @@ class GetUserQueryHandlerTest extends TestCase
         $array = $result->toArray();
         $this->assertNotNull($array);
         $this->assertArrayHasKey('user', $array);
-        $this->assertEquals('user@example.com', $array['user']['email']);
-        $this->assertEquals('Test User', $array['user']['name']);
-        $this->assertEquals('ROLE_READER', $array['user']['role']);
+        $this->assertSame('user@example.com', $array['user']['email']);
+        $this->assertSame('Test User', $array['user']['name']);
+        $this->assertSame('ROLE_READER', $array['user']['role']);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserLacksPermission(): void
@@ -79,13 +76,15 @@ class GetUserQueryHandlerTest extends TestCase
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($readerUser);
+            ->willReturn($readerUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canReadUsers')
             ->with($readerUser)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->userRepository->expects($this->never())->method('findById');
 
@@ -95,7 +94,6 @@ class GetUserQueryHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleReturnsResultWithNullUserWhenNotFound(): void

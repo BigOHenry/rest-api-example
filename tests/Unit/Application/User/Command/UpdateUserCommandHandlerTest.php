@@ -13,8 +13,8 @@ use App\Domain\User\Repository\UserRepositoryInterface;
 use App\Domain\User\Service\UserAuthorizationService;
 use App\Domain\User\ValueObject\UserRole;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
 
 class UpdateUserCommandHandlerTest extends TestCase
@@ -25,7 +25,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     private UpdateUserCommandHandler $handler;
 
     /**
-     * @return void
      * @throws Exception
      */
     protected function setUp(): void
@@ -42,7 +41,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulUserUpdateByAdmin(): void
@@ -52,25 +50,28 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(123, [
             'email' => 'updated@example.com',
             'name' => 'Updated User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($adminUser);
+            ->willReturn($adminUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with($adminUser)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $this->userRepository
             ->expects($this->once())
             ->method('findById')
             ->with(123)
-            ->willReturn($userToUpdate);
+            ->willReturn($userToUpdate)
+        ;
 
         $userToUpdate->expects($this->once())->method('setEmail')->with('updated@example.com');
         $userToUpdate->expects($this->once())->method('setName')->with('Updated User');
@@ -79,13 +80,13 @@ class UpdateUserCommandHandlerTest extends TestCase
         $this->userRepository
             ->expects($this->once())
             ->method('save')
-            ->with($userToUpdate);
+            ->with($userToUpdate)
+        ;
 
         $this->handler->handle($command);
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulReaderToAuthorUpdate(): void
@@ -95,7 +96,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(456, [
             'email' => 'newauthor@example.com',
             'name' => 'New Author',
-            'role' => 'ROLE_AUTHOR'
+            'role' => 'ROLE_AUTHOR',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -112,7 +113,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleSuccessfulAuthorToAdminUpdate(): void
@@ -122,7 +122,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(789, [
             'email' => 'newadmin@example.com',
             'name' => 'New Admin',
-            'role' => 'ROLE_ADMIN'
+            'role' => 'ROLE_ADMIN',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -136,7 +136,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserLacksManageUsersPermission(): void
@@ -145,19 +144,21 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(123, [
             'email' => 'unauthorized@example.com',
             'name' => 'Unauthorized Update',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn($readerUser);
+            ->willReturn($readerUser)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with($readerUser)
-            ->willReturn(false); // READER does not have permission
+            ->willReturn(false) // READER does not have permission
+        ;
 
         $this->userRepository->expects($this->never())->method('findById');
         $this->userRepository->expects($this->never())->method('save');
@@ -168,7 +169,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenAuthorTriesToUpdateUser(): void
@@ -177,7 +177,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(456, [
             'email' => 'unauthorized@example.com',
             'name' => 'Unauthorized Update',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($authorUser);
@@ -196,19 +196,21 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(789, [
             'email' => 'anonymous@example.com',
             'name' => 'Anonymous Update',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security
             ->expects($this->once())
             ->method('getUser')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->userAuthorizationService
             ->expects($this->once())
             ->method('canManageUsers')
             ->with(null)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $this->userRepository->expects($this->never())->method('findById');
         $this->userRepository->expects($this->never())->method('save');
@@ -219,7 +221,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleFailsWhenUserNotFound(): void
@@ -228,7 +229,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(999, [
             'email' => 'notfound@example.com',
             'name' => 'Not Found User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -238,7 +239,8 @@ class UpdateUserCommandHandlerTest extends TestCase
             ->expects($this->once())
             ->method('findById')
             ->with(999)
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $this->userRepository->expects($this->never())->method('save');
 
@@ -248,7 +250,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleCallsUserMethodsInCorrectOrder(): void
@@ -258,7 +259,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(123, [
             'email' => 'ordered@example.com',
             'name' => 'Ordered Update',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -275,7 +276,8 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @dataProvider roleUpdateProvider
+     * @dataProvider provideHandleWithDifferentRoleUpdatesCases
+     *
      * @throws Exception
      */
     public function testHandleWithDifferentRoleUpdates(UserRole $newRole): void
@@ -286,7 +288,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(123, [
             'email' => 'roletest@example.com',
             'name' => 'Role Test User',
-            'role' => $newRole->value
+            'role' => $newRole->value,
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -299,7 +301,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $this->handler->handle($command);
     }
 
-    public static function roleUpdateProvider(): array
+    public static function provideHandleWithDifferentRoleUpdatesCases(): iterable
     {
         return [
             'Update to Reader' => [UserRole::READER],
@@ -309,7 +311,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleDoesNotCallSaveWhenAuthorizationFails(): void
@@ -319,7 +320,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(123, [
             'email' => 'test@example.com',
             'name' => 'Test User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($readerUser);
@@ -328,7 +329,8 @@ class UpdateUserCommandHandlerTest extends TestCase
         // Critical check: save MUST NOT be called on authorization failure
         $this->userRepository
             ->expects($this->never())
-            ->method('save');
+            ->method('save')
+        ;
 
         $this->expectException(UserAccessDeniedDomainException::class);
 
@@ -336,7 +338,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleDoesNotCallSaveWhenUserNotFound(): void
@@ -345,7 +346,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(999, [
             'email' => 'test@example.com',
             'name' => 'Test User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);
@@ -355,7 +356,8 @@ class UpdateUserCommandHandlerTest extends TestCase
         // Critical check: save MUST NOT be called when the user does not exist
         $this->userRepository
             ->expects($this->never())
-            ->method('save');
+            ->method('save')
+        ;
 
         $this->expectException(UserNotFoundDomainException::class);
 
@@ -363,7 +365,6 @@ class UpdateUserCommandHandlerTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     public function testHandleDoesNotUpdatePasswordField(): void
@@ -374,7 +375,7 @@ class UpdateUserCommandHandlerTest extends TestCase
         $command = UpdateUserCommand::fromApiArray(123, [
             'email' => 'test@example.com',
             'name' => 'Test User',
-            'role' => 'ROLE_READER'
+            'role' => 'ROLE_READER',
         ]);
 
         $this->security->method('getUser')->willReturn($adminUser);

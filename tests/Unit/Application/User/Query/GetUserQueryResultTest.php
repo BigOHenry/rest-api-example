@@ -39,13 +39,13 @@ class GetUserQueryResultTest extends TestCase
 
         $this->assertIsArray($array);
         $this->assertArrayHasKey('user', $array);
-        $this->assertEquals([
+        $this->assertSame([
             'user' => [
                 'id' => 123,
                 'email' => 'reader@example.com',
                 'name' => 'Reader User',
                 'role' => 'ROLE_READER',
-            ]
+            ],
         ], $array);
     }
 
@@ -57,13 +57,13 @@ class GetUserQueryResultTest extends TestCase
 
         $array = $result->toArray();
 
-        $this->assertEquals([
+        $this->assertSame([
             'user' => [
                 'id' => 456,
                 'email' => 'author@example.com',
                 'name' => 'Author User',
                 'role' => 'ROLE_AUTHOR',
-            ]
+            ],
         ], $array);
     }
 
@@ -75,13 +75,13 @@ class GetUserQueryResultTest extends TestCase
 
         $array = $result->toArray();
 
-        $this->assertEquals([
+        $this->assertSame([
             'user' => [
                 'id' => 1,
                 'email' => 'admin@example.com',
                 'name' => 'Admin User',
                 'role' => 'ROLE_ADMIN',
-            ]
+            ],
         ], $array);
     }
 
@@ -95,7 +95,7 @@ class GetUserQueryResultTest extends TestCase
     }
 
     /**
-     * @dataProvider userRoleProvider
+     * @dataProvider provideToArrayWithDifferentUserRolesCases
      */
     public function testToArrayWithDifferentUserRoles(UserRole $role, string $expectedRoleString): void
     {
@@ -105,10 +105,10 @@ class GetUserQueryResultTest extends TestCase
 
         $array = $result->toArray();
 
-        $this->assertEquals($expectedRoleString, $array['user']['role']);
+        $this->assertSame($expectedRoleString, $array['user']['role']);
     }
 
-    public static function userRoleProvider(): array
+    public static function provideToArrayWithDifferentUserRolesCases(): iterable
     {
         return [
             'Reader role' => [UserRole::READER, 'ROLE_READER'],
@@ -198,7 +198,7 @@ class GetUserQueryResultTest extends TestCase
 
     /**
      * Auxiliary method for setting ID via reflection
-     * * (because setId is protected)
+     * * (because setId is protected).
      */
     private function setUserId(User $user, int $id): void
     {

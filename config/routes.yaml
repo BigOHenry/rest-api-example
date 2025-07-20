@@ -1,0 +1,25 @@
+homepage:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'app.swagger_ui'
+        permanent: true
+
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+app.swagger:
+    path: /api/doc.json
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger }
+
+api_login_check:
+    path: /api/auth/login
+
+controllers:
+    resource:
+        path: ../src/Infrastructure/Controller/
+        namespace: App\Infrastructure\Controller
+    type: attribute

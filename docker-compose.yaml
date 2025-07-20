@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: resources/docker/Dockerfile
+    container_name: rest_api
+    env_file:
+      - .env.local
+    ports:
+      - 8080:80
+    volumes:
+      - .:/var/www/app
+
+  database:
+    image: library/postgres:17.5-alpine
+    container_name: rest_postgresql
+    env_file:
+      - .env.local
+    ports:
+      - 5432:5432
+    environment:
+        PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - database_data:/var/lib/postgresql/pgdata:rw
+
+networks:
+  default:
+    external: true
+    name: rest_net
+
+volumes:
+  database_data:

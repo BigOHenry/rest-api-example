@@ -1,0 +1,101 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: Blog REST API EXAMPLE
+            description: Example of REST API for blog with Domain-Driven Design and CQRS
+            version: 1.0.0
+        paths:
+            /api/auth/login:
+                post:
+                    tags: [ Authentication ]
+                    summary: User authentication
+                    description: Authenticate user and return JWT token
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    required: [ email, password ]
+                                    properties:
+                                        email:
+                                            type: string
+                                            format: email
+                                            example: user@example.com
+                                        password:
+                                            type: string
+                                            example: password123
+                    responses:
+                        '200':
+                            description: Login successful
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                                                description: JWT authentication token
+                        '401':
+                            description: Authentication failed
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            code:
+                                                type: integer
+                                                example: 401
+                                            message:
+                                                type: string
+                                                example: Message why not authenticated.
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+            responses:
+                InternalServerError:
+                    description: Unknown error occurred
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: Unexpected internal error occurred
+                                    message:
+                                        type: string
+                                        example: 'Exception message'
+
+                NotAuthenticatedError:
+                    description: Authentication failed
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    code:
+                                        type: integer
+                                        example: 401
+                                    message:
+                                        type: string
+                                        example: Message why not authenticated.
+                AccessDeniedError:
+                    description: Access denied
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: You do not have permission for this operation
+                                    message:
+                                        type: string
+                                        example: Message why not authenticated.
+    areas:
+        path_patterns: # an array of regexps (document only routes under /api, except /api/doc)
+            - ^/api(?!/doc$)

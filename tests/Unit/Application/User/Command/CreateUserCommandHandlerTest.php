@@ -340,6 +340,7 @@ class CreateUserCommandHandlerTest extends TestCase
                 $idProperty = $reflection->getProperty('id');
                 $idProperty->setAccessible(true);
                 $idProperty->setValue($user, $userId);
-            });
+            })
+        ;
     }
 }

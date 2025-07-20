@@ -42,6 +42,7 @@ The Swagger documentation page should appear (redirected to /api/doc).
 - Static code analysis is performed by PHPStan `vendor/bin/phpstan analyse`
 - Code quality is checked according to PSR-12 and other rules using CodeSniffer `vendor/bin/phpcs` or automatic fix `vendor/bin/php-cs-fixer fix`
 - Unit tests are solved using PHPUnit `php bin/phpunit`
+- The results are available here: https://github.com/BigOHenry/rest-api-example/actions
 
 ## API Usage Examples
 

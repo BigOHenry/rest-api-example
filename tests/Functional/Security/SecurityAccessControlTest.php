@@ -65,7 +65,7 @@ class SecurityAccessControlTest extends WebTestCase
         ];
 
         foreach ($userEndpoints as [$method, $path, $description]) {
-            // Test bez autentizace
+            // Test without authentication
             $this->client->request($method, $path);
             $this->assertSame(
                 Response::HTTP_UNAUTHORIZED,
@@ -73,7 +73,7 @@ class SecurityAccessControlTest extends WebTestCase
                 "{$description} should require authentication"
             );
 
-            // Test s READER rolí
+            // Test with READER role
             $this->client->request($method, $path, [], [], $this->getAuthHeaders('reader@test.com'));
             $this->assertSame(
                 Response::HTTP_FORBIDDEN,
@@ -81,7 +81,7 @@ class SecurityAccessControlTest extends WebTestCase
                 "{$description} should be forbidden for READER"
             );
 
-            // Test s AUTHOR rolí
+            // Test with AUTHOR role
             $this->client->request($method, $path, [], [], $this->getAuthHeaders('author@test.com'));
             $this->assertSame(
                 Response::HTTP_FORBIDDEN,
@@ -89,7 +89,7 @@ class SecurityAccessControlTest extends WebTestCase
                 "{$description} should be forbidden for AUTHOR"
             );
 
-            // Test s ADMIN rolí
+            // Test with ADMIN role
             $this->client->request($method, $path, [], [], $this->getAuthHeaders('admin@test.com'));
             $this->assertNotSame(
                 Response::HTTP_FORBIDDEN,
@@ -108,7 +108,7 @@ class SecurityAccessControlTest extends WebTestCase
             'content' => 'This is test article content for security testing that is long enough to pass validation requirements.',
         ]);
 
-        // Test s READER rolí
+        // Test with READER role
         $this->client->request(
             'POST',
             '/api/articles',
@@ -123,7 +123,7 @@ class SecurityAccessControlTest extends WebTestCase
             'Article creation should be forbidden for READER'
         );
 
-        // Test s AUTHOR rolí
+        // Test with AUTHOR role
         $this->client->request(
             'POST',
             '/api/articles',
@@ -138,7 +138,7 @@ class SecurityAccessControlTest extends WebTestCase
             'Article creation should be accessible for AUTHOR'
         );
 
-        // Test s ADMIN rolí
+        // Test with ADMIN role
         $this->client->request(
             'POST',
             '/api/articles',
@@ -156,7 +156,7 @@ class SecurityAccessControlTest extends WebTestCase
 
     public function testArticleReadingRequiresAuthentication(): void
     {
-        // Test bez autentizace
+        // Test without authentication
         $this->client->request('GET', '/api/articles');
         $this->assertSame(
             Response::HTTP_UNAUTHORIZED,
@@ -164,7 +164,7 @@ class SecurityAccessControlTest extends WebTestCase
             'Article reading should require authentication'
         );
 
-        // Test se všemi rolemi
+        // Test with all roles
         $testUsers = ['reader@test.com', 'author@test.com', 'admin@test.com'];
 
         foreach ($testUsers as $email) {
@@ -184,21 +184,21 @@ class SecurityAccessControlTest extends WebTestCase
 
     public function testRoleHierarchyWorksCorrectly(): void
     {
-        // Test ADMIN má přístup ke všemu
+        // Test ADMIN has access to everything
         $this->client->request('GET', '/api/users', [], [], $this->getAuthHeaders('admin@test.com'));
         $this->assertNotSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', '/api/articles', [], [], $this->getAuthHeaders('admin@test.com'));
         $this->assertNotSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
-        // Test AUTHOR může spravovat články, ale ne uživatele
+        // Test AUTHOR can manage articles, but not users
         $this->client->request('GET', '/api/articles', [], [], $this->getAuthHeaders('author@test.com'));
         $this->assertNotSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
         $this->client->request('GET', '/api/users', [], [], $this->getAuthHeaders('author@test.com'));
         $this->assertSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
-        // Test READER může jen číst články
+        // Test READER can only read articles
         $this->client->request('GET', '/api/articles', [], [], $this->getAuthHeaders('reader@test.com'));
         $this->assertNotSame(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
 
@@ -210,7 +210,7 @@ class SecurityAccessControlTest extends WebTestCase
 
     private function getAuthHeaders(string $email, ?string $contentType = null): array
     {
-        // Najde uživatele v databázi (fixtures data)
+        // Finds users in the database (fixtures data)
         $userRepository = $this->entityManager->getRepository(User::class);
         $user = $userRepository->findOneBy(['email' => $email]);
 
@@ -218,7 +218,7 @@ class SecurityAccessControlTest extends WebTestCase
             throw new \Exception("Test user {$email} not found in database - check fixtures");
         }
 
-        // Vygeneruje JWT token
+        // Generuje token JWT
         $token = $this->jwtManager->create($user);
 
         $headers = [

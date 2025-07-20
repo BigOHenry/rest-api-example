@@ -15,20 +15,20 @@ jobs:
       pages: write       # Pro deployment na GitHub Pages
       id-token: write    # Pro GitHub Pages
 
-#    services:
-#      postgres:
-#        image: library/postgres:17.5-alpine
-#        env:
-#          POSTGRES_DB: rest_db_test
-#          POSTGRES_USER: app
-#          POSTGRES_PASSWORD: test
-#        options: >-
-#          --health-cmd pg_isready
-#          --health-interval 10s
-#          --health-timeout 5s
-#          --health-retries 5
-#        ports:
-#          - 5432:5432
+    services:
+      postgres:
+        image: library/postgres:17.5-alpine
+        env:
+          POSTGRES_DB: rest_db_test
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Checkout repository
@@ -60,15 +60,15 @@ jobs:
       - name: Create var directory
         run: mkdir -p var
 
-#      - name: Create .env.local
-#        run: |
-#          touch .env.local
-#          echo 'APP_ENV=test' > .env.local
+      - name: Create .env.local
+        run: |
+          touch .env.local
+          echo 'APP_ENV=test' > .env.local
 
-#      - name: Run database migrations
-#        run: |
-#          php bin/console doctrine:database:create --env=test
-#          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+      - name: Run database migrations
+        run: |
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Run PHPUnit tests
         run: php bin/phpunit

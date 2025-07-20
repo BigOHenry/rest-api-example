@@ -22,11 +22,11 @@ services:
         PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - database_data:/var/lib/postgresql/pgdata:rw
-    healthcheck:
-        test: [ "CMD", "pg_isready", "-d", "${DATABASE_NAME:-db_rest}", "-U", "${DATABASE_USER:-app}" ]
-        timeout: 5s
-        retries: 5
-        start_period: 60s
+
+networks:
+  default:
+    external: true
+    name: rest_net
 
 volumes:
   database_data:

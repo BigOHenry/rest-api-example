@@ -30,10 +30,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', nullable: false, enumType: UserRole::class)]
     private UserRole $role;
 
-    protected function __construct(?int $id = null)
-    {
-        $this->id = $id;
-    }
 
     public static function create(string $email, string $password, string $name, UserRole $role = UserRole::READER): self
     {
